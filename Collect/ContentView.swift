@@ -13,26 +13,34 @@ struct ContentView: View {
     @Query private var items: [Item]
     
     var body: some View {
-        NavigationView {
-            List {
-                ForEach(items) { item in
-                    NavigationLink {
-                        Text("Item at \(item.timestamp, format: Date.FormatStyle(date: .numeric, time: .standard))")
-                    } label: {
-                        Text(item.timestamp, format: Date.FormatStyle(date: .numeric, time: .standard))
-                    }
-                }
-                .onDelete(perform: deleteItems)
-            }
-            .toolbar {
-                ToolbarItem {
-                    Button(action: addItem) {
-                        Label("Add Item", systemImage: "plus")
-                    }
-                }
-            }
-            Text("Select an item")
+        VStack {
+            Text("hello world")
+            
         }
+        .eventMonitor(.global, for: .mouseMoved) { mouseMoveEvent in
+            print(mouseMoveEvent.absoluteX, mouseMoveEvent.absoluteY, mouseMoveEvent.absoluteZ)
+            return mouseMoveEvent
+        }
+        // NavigationView {
+        //     List {
+        //         ForEach(items) { item in
+        //             NavigationLink {
+        //                 Text("Item at \(item.timestamp, format: Date.FormatStyle(date: .numeric, time: .standard))")
+        //             } label: {
+        //                 Text(item.timestamp, format: Date.FormatStyle(date: .numeric, time: .standard))
+        //             }
+        //         }
+        //         .onDelete(perform: deleteItems)
+        //     }
+        //     .toolbar {
+        //         ToolbarItem {
+        //             Button(action: addItem) {
+        //                 Label("Add Item", systemImage: "plus")
+        //             }
+        //         }
+        //     }
+        //     Text("Select an item")
+        // }
     }
 
     private func addItem() {
