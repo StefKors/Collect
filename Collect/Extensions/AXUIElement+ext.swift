@@ -11,6 +11,40 @@ import Cocoa
 
 extension AXUIElement {
 
+    class func element(at position: CGPoint) -> AXUIElement? {
+        var element: AXUIElement?
+        var selected: AXUIElement?
+        let systemwideElement = AXUIElementCreateSystemWide()
+
+        withUnsafeMutablePointer(to: &element) { elementPtr in
+            if .success == AXUIElementCopyElementAtPosition(systemwideElement, Float(position.x), Float(position.y), elementPtr) {
+                guard let element = elementPtr.pointee else { return }
+                do {
+                    var role: CFTypeRef?
+                    withUnsafeMutablePointer(to: &role) { rolePtr in
+                        if
+                            .success == AXUIElementCopyAttributeValue(element, NSAccessibility.Attribute.role as CFString, rolePtr),
+                            let role = rolePtr.pointee as? NSAccessibility.Role {
+                            print(role.rawValue)
+                            selected = element
+                        }
+                    }
+                }
+                // do {
+                //     var window: CFTypeRef?
+                //     withUnsafeMutablePointer(to: &window) { windowPtr in
+                //         if .success == AXUIElementCopyAttributeValue(element, NSAccessibility.Attribute.window as CFString, windowPtr) {
+                //             selected = (windowPtr.pointee as! AXUIElement)
+                //         }
+                //     }
+                // }
+            }
+        }
+
+        return selected
+    }
+
+
     class func window(at position: CGPoint) -> AXUIElement? {
         var element: AXUIElement?
         var selected: AXUIElement?

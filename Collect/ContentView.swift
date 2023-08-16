@@ -8,39 +8,52 @@
 import SwiftUI
 import SwiftData
 
+
+
 struct ContentView: View {
     @Environment(\.modelContext) private var modelContext
     @Query private var items: [Item]
-    
+
+    @State private var collect: Bool = false
+
     var body: some View {
-        VStack {
-            Text("hello world")
-            
+        NavigationView {
+            List {
+                ForEach(items) { item in
+                    NavigationLink {
+                        Text("Item at \(item.timestamp, format: Date.FormatStyle(date: .numeric, time: .standard))")
+                    } label: {
+                        Text(item.timestamp, format: Date.FormatStyle(date: .numeric, time: .standard))
+                    }
+                }
+                .onDelete(perform: deleteItems)
+            }
+            .overlay(alignment: .bottom, content: {
+                Button(action: enableCollect) {
+                    Label("Collect", systemImage: "cursorarrow.and.square.on.square.dashed")
+                        .symbolRenderingMode(.palette)
+                }
+                .padding(.bottom)
+            })
+            .sheet(isPresented: $collect, content: {
+                CollectOverlayWindow()
+                    .scenePadding()
+                    .interactiveDismissDisabled(true)
+            })
+            .toolbar {
+                ToolbarItem {
+                    Button(action: addItem) {
+                        Label("Add Item", systemImage: "plus")
+                    }
+                }
+            }
+            Text("Select an item")
         }
-        .eventMonitor(.global, for: .mouseMoved) { mouseMoveEvent in
-            print(mouseMoveEvent.absoluteX, mouseMoveEvent.absoluteY, mouseMoveEvent.absoluteZ)
-            return mouseMoveEvent
-        }
-        // NavigationView {
-        //     List {
-        //         ForEach(items) { item in
-        //             NavigationLink {
-        //                 Text("Item at \(item.timestamp, format: Date.FormatStyle(date: .numeric, time: .standard))")
-        //             } label: {
-        //                 Text(item.timestamp, format: Date.FormatStyle(date: .numeric, time: .standard))
-        //             }
-        //         }
-        //         .onDelete(perform: deleteItems)
-        //     }
-        //     .toolbar {
-        //         ToolbarItem {
-        //             Button(action: addItem) {
-        //                 Label("Add Item", systemImage: "plus")
-        //             }
-        //         }
-        //     }
-        //     Text("Select an item")
-        // }
+
+    }
+
+    private func enableCollect() {
+        collect.toggle()
     }
 
     private func addItem() {
