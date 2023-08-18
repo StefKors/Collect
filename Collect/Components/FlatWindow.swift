@@ -47,12 +47,105 @@ class WindowManager {
     var emptyWindow = FlatWindow((0, 0, 1, 1)) { EmptyView() }
     
     var shapeWindowExample = FlatWindow((0, 0, 400, 400)) {
-        Rectangle()
-            .strokeBorder(.red, lineWidth: 3)
+        RoundedRectangle(cornerRadius: 10)
+            .strokeBorder(Color.accentColor, lineWidth: 3)
             .background(
-                Rectangle()
-                    .foregroundColor(.red.opacity(0.15)))
+                RoundedRectangle(cornerRadius: 10)
+                    .foregroundColor(Color.accentColor.opacity(0.1)))
     }
+
+    var fullScreenWindow = FullScreenWindow((0, 0, 400, 400)) {
+        RoundedRectangle(cornerRadius: 10)
+            .strokeBorder(Color.accentColor, lineWidth: 3)
+            .background(
+                RoundedRectangle(cornerRadius: 10)
+                    .foregroundColor(Color.accentColor.opacity(0.1)))
+    }
+}
+
+class FullScreenWindow: NSPanel {
+
+    convenience init(
+        _ contentRect: (CGFloat, CGFloat, CGFloat, CGFloat),
+        @ViewBuilder content: @escaping () -> some View
+    ) {
+        self.init(CGRectMake(
+            contentRect.0,
+            contentRect.1,
+            contentRect.2,
+            contentRect.3),
+                  content: content);
+    }
+
+    override func animationResizeTime(_ newFrame: NSRect) -> TimeInterval {
+        return 0.05
+    }
+
+    init(
+        _ contentRect: NSRect,
+        styleMask style: NSWindow.StyleMask = [
+            .borderless,
+            .fullSizeContentView,
+            .nonactivatingPanel,
+            .resizable,
+        ],
+        backing backingStoreType: NSWindow.BackingStoreType = .buffered,
+        defer flag: Bool = false,
+        @ViewBuilder content: @escaping () -> some View
+    ) {
+        super.init(
+            contentRect: contentRect,
+            styleMask: style,
+            backing: backingStoreType,
+            defer: flag);
+
+        /// Enable drawing/positioning in the menubar
+        /// and dock regions.
+        ///
+        self.level = .mainMenu + 1;
+
+        // DISABLE MOUSE EVENTS!!
+        self.ignoresMouseEvents = true
+
+        self.collectionBehavior.insert(.fullScreenAuxiliary);
+
+        self.isMovable = true;
+        self.isMovableByWindowBackground = true;
+
+        self.isReleasedWhenClosed = true;
+
+        self.isOpaque = false;
+        self.hasShadow = false;
+        self.backgroundColor = .clear;
+
+        self.titleVisibility = .hidden;
+        self.titlebarAppearsTransparent = true;
+
+        self.contentView = NSHostingView(
+            rootView: AnyView(content()).ignoresSafeArea(.all)
+        );
+    }
+
+    func setCollectRect(_ rect: NSRect) {
+
+    }
+
+    override var canBecomeKey: Bool { true }
+
+    // /// Use custom, 90-degree window corners.
+    // ///
+    // @objc func _cornerMask() -> NSImage {
+    //     let image = NSImage(size: CGSizeMake(4, 4));
+    //
+    //     image.lockFocus();
+    //
+    //     NSColor.red.setFill();
+    //     NSBezierPath(rect: CGRectMake(0, 0, 4, 4)).fill();
+    //
+    //     image.unlockFocus();
+    //
+    //     return image;
+    // }
 }
 
 // MARK: - Custom Window
@@ -122,18 +215,18 @@ class FlatWindow: NSPanel {
     
     override var canBecomeKey: Bool { true }
     
-    /// Use custom, 90-degree window corners.
-    ///
-    @objc func _cornerMask() -> NSImage {
-        let image = NSImage(size: CGSizeMake(4, 4));
-        
-        image.lockFocus();
-        
-        NSColor.red.setFill();
-        NSBezierPath(rect: CGRectMake(0, 0, 4, 4)).fill();
-        
-        image.unlockFocus();
-        
-        return image;
-    }
+    // /// Use custom, 90-degree window corners.
+    // ///
+    // @objc func _cornerMask() -> NSImage {
+    //     let image = NSImage(size: CGSizeMake(4, 4));
+    //     
+    //     image.lockFocus();
+    //     
+    //     NSColor.red.setFill();
+    //     NSBezierPath(rect: CGRectMake(0, 0, 4, 4)).fill();
+    //     
+    //     image.unlockFocus();
+    //     
+    //     return image;
+    // }
 }

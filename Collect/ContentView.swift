@@ -8,8 +8,6 @@
 import SwiftUI
 import SwiftData
 
-
-
 struct ContentView: View {
     @Environment(\.modelContext) private var modelContext
     @Query private var items: [Item]
@@ -35,11 +33,14 @@ struct ContentView: View {
                 }
                 .padding(.bottom)
             })
-            .sheet(isPresented: $collect, content: {
-                CollectOverlayWindow()
-                    .scenePadding()
-                    .interactiveDismissDisabled(true)
+            .floatingPanel(isPresented: $collect, content: {
+                CollectAreaContentView()
             })
+            // .sheet(isPresented: $collect, content: {
+            //     CollectOverlayWindow()
+            //         .scenePadding()
+            //         .interactiveDismissDisabled(true)
+            // })
             .toolbar {
                 ToolbarItem {
                     Button(action: addItem) {
@@ -47,7 +48,20 @@ struct ContentView: View {
                     }
                 }
             }
-            Text("Select an item")
+
+
+            GroupBox {
+                VStack {
+                    Text("Start Collecting")
+
+                    Button(action: enableCollect) {
+                        Label("Collect", systemImage: "cursorarrow.and.square.on.square.dashed")
+                            .symbolRenderingMode(.palette)
+                    }
+                    .buttonStyle(.borderless)
+                }
+                .scenePadding()
+            }
         }
 
     }

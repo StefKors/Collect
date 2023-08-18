@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		8A0FFB832A8F7E980061F481 /* CollectAreaContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A0FFB822A8F7E980061F481 /* CollectAreaContentView.swift */; };
+		8A0FFB852A8F80730061F481 /* FloatingPanel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A0FFB842A8F80730061F481 /* FloatingPanel.swift */; };
+		8A0FFB872A8F84F70061F481 /* DebugGridView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A0FFB862A8F84F70061F481 /* DebugGridView.swift */; };
 		8A6B30E72A61D765005995A6 /* CollectApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A6B30E62A61D765005995A6 /* CollectApp.swift */; };
 		8A6B30E92A61D765005995A6 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A6B30E82A61D765005995A6 /* ContentView.swift */; };
 		8A6B30EB2A61D768005995A6 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8A6B30EA2A61D768005995A6 /* Assets.xcassets */; };
@@ -20,6 +23,9 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		8A0FFB822A8F7E980061F481 /* CollectAreaContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectAreaContentView.swift; sourceTree = "<group>"; };
+		8A0FFB842A8F80730061F481 /* FloatingPanel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FloatingPanel.swift; sourceTree = "<group>"; };
+		8A0FFB862A8F84F70061F481 /* DebugGridView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugGridView.swift; sourceTree = "<group>"; };
 		8A24474F2A8CC50D009CFED1 /* usemulti_inspo.jpeg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = usemulti_inspo.jpeg; sourceTree = "<group>"; };
 		8A6B30E32A61D765005995A6 /* Collect.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Collect.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		8A6B30E62A61D765005995A6 /* CollectApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectApp.swift; sourceTree = "<group>"; };
@@ -102,6 +108,7 @@
 			children = (
 				8AD7AB992A8B8963009D5962 /* CollectOverlayWindow.swift */,
 				8A6B30FC2A61DB7C005995A6 /* FlatWindow.swift */,
+				8A0FFB862A8F84F70061F481 /* DebugGridView.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -109,6 +116,8 @@
 		8AD7AB9E2A8B89A7009D5962 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				8A0FFB822A8F7E980061F481 /* CollectAreaContentView.swift */,
+				8A0FFB842A8F80730061F481 /* FloatingPanel.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -129,6 +138,8 @@
 			dependencies = (
 			);
 			name = Collect;
+			packageProductDependencies = (
+			);
 			productName = Collect;
 			productReference = 8A6B30E32A61D765005995A6 /* Collect.app */;
 			productType = "com.apple.product-type.application";
@@ -157,6 +168,8 @@
 				Base,
 			);
 			mainGroup = 8A6B30DA2A61D765005995A6;
+			packageReferences = (
+			);
 			productRefGroup = 8A6B30E42A61D765005995A6 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -183,11 +196,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8A0FFB832A8F7E980061F481 /* CollectAreaContentView.swift in Sources */,
+				8A0FFB872A8F84F70061F481 /* DebugGridView.swift in Sources */,
 				8A6B30E92A61D765005995A6 /* ContentView.swift in Sources */,
 				8AD7AB9A2A8B8963009D5962 /* CollectOverlayWindow.swift in Sources */,
 				8A6B30FB2A61D83B005995A6 /* EventMonitor.swift in Sources */,
 				8AD7AB9C2A8B898A009D5962 /* NSPoint.swift in Sources */,
 				8A6B30F92A61D77B005995A6 /* AXUIElement+ext.swift in Sources */,
+				8A0FFB852A8F80730061F481 /* FloatingPanel.swift in Sources */,
 				8A6B30FD2A61DB7C005995A6 /* FlatWindow.swift in Sources */,
 				8A6B30F02A61D768005995A6 /* Item.swift in Sources */,
 				8A6B30E72A61D765005995A6 /* CollectApp.swift in Sources */,
