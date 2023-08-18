@@ -19,61 +19,69 @@ struct ContentView: View {
             List {
                 ForEach(items) { item in
                     NavigationLink {
-                        Text("Item at \(item.timestamp, format: Date.FormatStyle(date: .numeric, time: .standard))")
+                        VStack {
+                            Text("Item at \(item.timestamp, format: Date.FormatStyle(date: .numeric, time: .standard))")
+                            Text(item.text)
+                        }
+                        .toolbar(content: {
+                            ToolbarItem {
+                                Button("Remove item") {
+                                    deleteItem(item)
+                                }
+                            }
+                        })
                     } label: {
-                        Text(item.timestamp, format: Date.FormatStyle(date: .numeric, time: .standard))
+                        // Text(item.timestamp, format: Date.FormatStyle(date: .numeric, time: .standard))
+                        Text(item.text)
+                            .truncationMode(.tail)
+                            .lineLimit(1)
                     }
                 }
                 .onDelete(perform: deleteItems)
             }
-            .overlay(alignment: .bottom, content: {
-                Button(action: enableCollect) {
-                    Label("Collect", systemImage: "cursorarrow.and.square.on.square.dashed")
-                        .symbolRenderingMode(.palette)
+
+
+            HStack {
+                Text("Press")
+                GroupBox {
+                    Text("⌥")
                 }
-                .padding(.bottom)
-            })
-            .floatingPanel(isPresented: $collect, content: {
-                CollectAreaContentView()
-            })
-            // .sheet(isPresented: $collect, content: {
-            //     CollectOverlayWindow()
-            //         .scenePadding()
-            //         .interactiveDismissDisabled(true)
-            // })
-            .toolbar {
-                ToolbarItem {
-                    Button(action: addItem) {
-                        Label("Add Item", systemImage: "plus")
-                    }
-                }
+                Text("to start collecting")
             }
-
-
-            GroupBox {
-                VStack {
-                    Text("Start Collecting")
-
-                    Button(action: enableCollect) {
-                        Label("Collect", systemImage: "cursorarrow.and.square.on.square.dashed")
-                            .symbolRenderingMode(.palette)
-                    }
-                    .buttonStyle(.borderless)
-                }
-                .scenePadding()
-            }
+            .floatingPanel(isPresented: .constant(true), content: {
+                CollectAreaContentView(onCollect: handleCollect)
+            })
         }
+        .toolbar(content: {
+            ToolbarItem {
+                Button {
+                    
+                } label: {
+                    Label("Information", systemImage: "info.circle.fill")
+                }
+            }
+        })
 
+    }
+
+    private func handleCollect(_ text: String) {
+        addItem(text: text)
     }
 
     private func enableCollect() {
         collect.toggle()
     }
 
-    private func addItem() {
+    private func addItem(text: String) {
         withAnimation {
-            let newItem = Item(timestamp: Date())
+            let newItem = Item(text: text)
             modelContext.insert(newItem)
+        }
+    }
+
+    private func deleteItem(_ item: Item) {
+        withAnimation {
+            modelContext.delete(item)
         }
     }
 
