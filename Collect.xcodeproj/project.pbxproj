@@ -65,7 +65,6 @@
 		8A6B30DA2A61D765005995A6 = {
 			isa = PBXGroup;
 			children = (
-				8A0238B42AD01813006C8316 /* ListItem.swift */,
 				8A6B30E52A61D765005995A6 /* Collect */,
 				8A6B30E42A61D765005995A6 /* Products */,
 			);
@@ -120,6 +119,7 @@
 		8AD7AB9D2A8B899A009D5962 /* Components */ = {
 			isa = PBXGroup;
 			children = (
+				8A0238B42AD01813006C8316 /* ListItem.swift */,
 				8A0FFB842A8F80730061F481 /* FloatingPanel.swift */,
 				8A0FFB862A8F84F70061F481 /* DebugGridView.swift */,
 				8A47C3F72A8FA70D0015F8BC /* DebugFullWindowView.swift */,
@@ -365,6 +365,7 @@
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.graphics-design";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -392,6 +393,7 @@
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.graphics-design";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
