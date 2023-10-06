@@ -102,7 +102,7 @@ struct RecordingToolBarView: View {
 
 #Preview {
     RecordingToolBarView(area: .constant(.preview940))
-        .modelContainer(for: Item.self, inMemory: true)
+        .modelContainer(for: LinkItem.self, inMemory: true)
 }
 
 

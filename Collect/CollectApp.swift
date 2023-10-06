@@ -15,6 +15,6 @@ struct CollectApp: App {
         WindowGroup {
             ContentView()
         }
-        .modelContainer(for: Item.self)
+        .modelContainer(for: LinkItem.self)
     }
 }
