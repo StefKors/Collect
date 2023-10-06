@@ -10,13 +10,15 @@ import SwiftData
 
 struct ContentView: View {
     @Environment(\.modelContext) private var modelContext
-    @Query private var items: [LinkItem]
-
+    @Environment(\.openURL) private var openURL
+    
+    @Query(sort: \LinkItem.timestamp, order: .reverse) private var items: [LinkItem]
+    
     @State private var isHovering: Bool = false
     @State private var input: String = ""
-
+    
     private let columns = [GridItem(.flexible()), GridItem(.flexible()), GridItem(.flexible())]
-
+    
     var body: some View {
         VStack {
             TextField("URL", text: $input)
@@ -26,25 +28,31 @@ struct ContentView: View {
                     }
                 }
                 .textFieldStyle(.roundedBorder)
-            LazyVGrid(columns: columns) {
-                ForEach(items) { item in
-                    ListItem(item: item)
+            ScrollView(.vertical) {
+                LazyVGrid(columns: columns) {
+                    ForEach(items) { item in
+                        ListItem(item: item)
+                            .onTapGesture {
+                                openURL(item.url)
+                            }
+                    }
+                    .onDelete(perform: deleteItems)
                 }
-                .onDelete(perform: deleteItems)
+                .scrollBounceBehavior(.basedOnSize)
             }
-
+            
             Spacer()
         }
         .padding()
     }
-
+    
     private func addItem(_ url: URL) {
         withAnimation {
             let newItem = LinkItem(timestamp: Date(), url: url)
             modelContext.insert(newItem)
         }
     }
-
+    
     private func deleteItems(offsets: IndexSet) {
         withAnimation {
             for index in offsets {
