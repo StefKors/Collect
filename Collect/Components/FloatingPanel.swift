@@ -48,7 +48,7 @@ class FloatingPanel<Content: View>: NSWindow {
             defer: flag
         )
         self.isOpaque = false;
-        self.ignoresMouseEvents = true
+//        self.ignoresMouseEvents = true
         self.hasShadow = false;
         self.backgroundColor = .clear;
 
@@ -107,9 +107,9 @@ fileprivate struct FloatingPanelModifier<PanelContent: View>: ViewModifier {
             }
             .onChange(of: isPresented, initial: false) { (oldValue, newValue) in
                 /// On change of the presentation state, make the panel react accordingly
-                if newValue == false {
-                    panel?.close()
-                }
+//                if newValue == false {
+//                    panel?.close()
+//                }
             }
     }
 }

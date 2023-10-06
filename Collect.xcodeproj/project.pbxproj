@@ -19,6 +19,9 @@
 		8A6B30EE2A61D768005995A6 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8A6B30ED2A61D768005995A6 /* Preview Assets.xcassets */; };
 		8A6B30F02A61D768005995A6 /* Item.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A6B30EF2A61D768005995A6 /* Item.swift */; };
 		8A6B30FB2A61D83B005995A6 /* EventMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A6B30FA2A61D83B005995A6 /* EventMonitor.swift */; };
+		8A87F6F62ABC802A004305F6 /* CollectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A87F6F52ABC802A004305F6 /* CollectView.swift */; };
+		8A87F6F82ABC8711004305F6 /* ScreenRecorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A87F6F72ABC8711004305F6 /* ScreenRecorder.swift */; };
+		8A87F6FA2ABC8A0F004305F6 /* RecordingToolBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A87F6F92ABC8A0F004305F6 /* RecordingToolBarView.swift */; };
 		8AD7AB9C2A8B898A009D5962 /* NSPoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AD7AB9B2A8B898A009D5962 /* NSPoint.swift */; };
 /* End PBXBuildFile section */
 
@@ -37,6 +40,9 @@
 		8A6B30EF2A61D768005995A6 /* Item.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Item.swift; sourceTree = "<group>"; };
 		8A6B30F12A61D768005995A6 /* Collect.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Collect.entitlements; sourceTree = "<group>"; };
 		8A6B30FA2A61D83B005995A6 /* EventMonitor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventMonitor.swift; sourceTree = "<group>"; };
+		8A87F6F52ABC802A004305F6 /* CollectView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CollectView.swift; sourceTree = "<group>"; };
+		8A87F6F72ABC8711004305F6 /* ScreenRecorder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScreenRecorder.swift; sourceTree = "<group>"; };
+		8A87F6F92ABC8A0F004305F6 /* RecordingToolBarView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RecordingToolBarView.swift; sourceTree = "<group>"; };
 		8AD7AB9B2A8B898A009D5962 /* NSPoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NSPoint.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -76,6 +82,7 @@
 				8A6B30F72A61D771005995A6 /* Extensions */,
 				8A6B30E62A61D765005995A6 /* CollectApp.swift */,
 				8A6B30E82A61D765005995A6 /* ContentView.swift */,
+				8A87F6F52ABC802A004305F6 /* CollectView.swift */,
 				8A6B30EA2A61D768005995A6 /* Assets.xcassets */,
 				8A6B30EF2A61D768005995A6 /* Item.swift */,
 				8A6B30F12A61D768005995A6 /* Collect.entitlements */,
@@ -96,6 +103,7 @@
 		8A6B30F72A61D771005995A6 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
+				8A87F6F72ABC8711004305F6 /* ScreenRecorder.swift */,
 				8A6B30FA2A61D83B005995A6 /* EventMonitor.swift */,
 				8AD7AB9B2A8B898A009D5962 /* NSPoint.swift */,
 				8A47C3FC2A8FBAAB0015F8BC /* SystemWideElement.swift */,
@@ -109,6 +117,7 @@
 				8A0FFB842A8F80730061F481 /* FloatingPanel.swift */,
 				8A0FFB862A8F84F70061F481 /* DebugGridView.swift */,
 				8A47C3F72A8FA70D0015F8BC /* DebugFullWindowView.swift */,
+				8A87F6F92ABC8A0F004305F6 /* RecordingToolBarView.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -199,6 +208,8 @@
 			files = (
 				8A0FFB832A8F7E980061F481 /* CollectAreaContentView.swift in Sources */,
 				8A0FFB872A8F84F70061F481 /* DebugGridView.swift in Sources */,
+				8A87F6FA2ABC8A0F004305F6 /* RecordingToolBarView.swift in Sources */,
+				8A87F6F82ABC8711004305F6 /* ScreenRecorder.swift in Sources */,
 				8A47C3FD2A8FBAAB0015F8BC /* SystemWideElement.swift in Sources */,
 				8A6B30E92A61D765005995A6 /* ContentView.swift in Sources */,
 				8A6B30FB2A61D83B005995A6 /* EventMonitor.swift in Sources */,
@@ -206,6 +217,7 @@
 				8A0FFB852A8F80730061F481 /* FloatingPanel.swift in Sources */,
 				8A47C3F82A8FA70D0015F8BC /* DebugFullWindowView.swift in Sources */,
 				8A6B30F02A61D768005995A6 /* Item.swift in Sources */,
+				8A87F6F62ABC802A004305F6 /* CollectView.swift in Sources */,
 				8A6B30E72A61D765005995A6 /* CollectApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

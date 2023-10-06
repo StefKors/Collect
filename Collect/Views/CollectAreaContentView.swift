@@ -58,8 +58,10 @@ struct CollectAreaContentView: View {
         withAnimation(.bouncy(duration: 0.2)) {
             if event.modifierFlags.contains(.option) {
                 showCollect = true
+                showDebugUI = true
             } else {
                 showCollect = false
+                showDebugUI = false
             }
         }
     }
