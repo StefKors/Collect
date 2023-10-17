@@ -9,18 +9,20 @@ import SwiftUI
 
 struct ListItem: View {
     let item: LinkItem
-
+    
     @State private var info: LinkInformation?
-
+    
     var body: some View {
         ZStack(alignment: .top) {
             if let image = info?.previewImage {
                 Image(nsImage: image)
                     .resizable()
                     .scaledToFill()
+                    .id("second")
                     .transition(.opacity.animation(.snappy))
+                
             }
-
+            
         }
         .frame(minWidth: 160, idealWidth: 260, maxWidth: 460, minHeight: 60, idealHeight: 200, maxHeight: 200, alignment: .center)
         .overlay(alignment: .topLeading, content: {
@@ -36,44 +38,7 @@ struct ListItem: View {
         })
         //        .frame(width: 300, height: 260, alignment: .center)
         .overlay(alignment: .bottom, content: {
-            HStack(spacing: 0) {
-                VStack(alignment: .leading, spacing: 6) {
-                    if let title = info?.title {
-                        Text(title)
-                            .transition(.opacity.animation(.snappy))
-                    } else {
-                        Text(item.url.absoluteString)
-                            .transition(.opacity.animation(.snappy))
-                    }
-
-                    HStack {
-                        Image(systemName: "tag")
-                            .symbolRenderingMode(.monochrome)
-                            .fontWeight(.semibold)
-                            .foregroundStyle(.primary)
-                        Text("inbox")
-
-                        Spacer()
-
-                        if let host = item.url.mainHost {
-                            Text(host)
-                        }
-
-                        Spacer()
-
-                        Text(item.timestamp, format: .relative(presentation: .named))
-                    }
-                    .foregroundStyle(.secondary)
-                    .font(.caption)
-                }
-
-                Spacer()
-            }
-
-            //            Spacer()
-            .padding(.horizontal, 6)
-            .padding(.vertical, 8)
-            .background(.ultraThinMaterial)
+            InfoBarView(item: item, info: info)
         })
         .background(
             RoundedRectangle(cornerRadius: 6, style: .continuous)
@@ -96,6 +61,51 @@ struct ListItem: View {
                 self.info = await item.backFillLinkInformation()
             }
         }
+    }
+}
+
+struct InfoBarView: View {
+    let item: LinkItem
+    let info: LinkInformation?
+    var body: some View {
+        HStack(spacing: 0) {
+            VStack(alignment: .leading, spacing: 6) {
+                if let title = info?.title {
+                    Text(title)
+                        .transition(.opacity.animation(.snappy))
+                } else {
+                    Text(item.url.absoluteString)
+                        .transition(.opacity.animation(.snappy))
+                }
+                
+                HStack {
+                    Image(systemName: "tag")
+                        .symbolRenderingMode(.monochrome)
+                        .fontWeight(.semibold)
+                        .foregroundStyle(.primary)
+                    Text("inbox")
+                    
+                    Spacer()
+                    
+                    if let host = item.url.mainHost {
+                        Text(host)
+                    }
+                    
+                    Spacer()
+                    
+                    Text(item.timestamp, format: .relative(presentation: .named))
+                }
+                .foregroundStyle(.secondary)
+                .font(.caption)
+            }
+            
+            Spacer()
+        }
+        
+        //            Spacer()
+        .padding(.horizontal, 6)
+        .padding(.vertical, 8)
+        .background(.ultraThinMaterial)
     }
 }
 

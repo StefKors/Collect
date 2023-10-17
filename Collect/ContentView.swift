@@ -17,17 +17,10 @@ struct ContentView: View {
     @State private var isHovering: Bool = false
     @State private var input: String = ""
     
-    private let columns = [GridItem(.flexible()), GridItem(.flexible()), GridItem(.flexible())]
+    private let columns = [GridItem(.adaptive(minimum: 260))]
     
     var body: some View {
         VStack {
-            TextField("URL", text: $input)
-                .onSubmit {
-                    if let url = URL(string: input) {
-                        addItem(url)
-                    }
-                }
-                .textFieldStyle(.roundedBorder)
             ScrollView(.vertical) {
                 LazyVGrid(columns: columns) {
                     ForEach(items) { item in
@@ -40,7 +33,19 @@ struct ContentView: View {
                 }
                 .scrollBounceBehavior(.basedOnSize)
             }
-            
+            .scrollClipDisabled()
+            .overlay(alignment: .bottom) {
+                TextField("URL", text: $input)
+                    .onSubmit {
+                        if let url = URL(string: input) {
+                            addItem(url)
+                        }
+                    }
+                    .textFieldStyle(.roundedBorder)
+                    .scenePadding()
+                    .frame(maxWidth: 400)
+            }
+
             Spacer()
         }
         .padding()
