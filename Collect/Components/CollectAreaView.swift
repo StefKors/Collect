@@ -21,13 +21,13 @@ struct CollectAreaView: View {
 
     var body: some View {
         ZStack() {
-//            if showDebugUI {
-//                DebugFullWindowView()
-//                    .overlay(alignment: .bottomTrailing) {
-//                        DebugGridView(mouseLocation: $mouseLocation, origin: $origin, size: $size)
-//                            .scenePadding()
-//                    }
-//            }
+            if showDebugUI {
+                DebugFullWindowView()
+                    .overlay(alignment: .bottomTrailing) {
+                        DebugGridView(mouseLocation: $mouseLocation, origin: $origin, size: $size)
+                            .scenePadding()
+                    }
+            }
 
             RoundedRectangle(cornerRadius: 8)
                 .strokeBorder(Color.accentColor.opacity(0.6), lineWidth: 2)
@@ -43,7 +43,12 @@ struct CollectAreaView: View {
         .ignoresSafeArea(.all)
         
         .globalEventMonitor(for: [.leftMouseDown]) { event in
-            handleClick()
+            // Runs duplicates? still buggy
+            guard showCollect else { return }
+            Throttler.throttle( delay: .seconds(2),shouldRunImmediately: true) {
+                print("handleClick!")
+                handleClick()
+            }
         }
         // TODO: add more events like scroll and touch and etc...
         .universalEventMonitor(for: [.mouseMoved, .flagsChanged, .keyUp, .keyDown]) { event in
@@ -56,13 +61,16 @@ struct CollectAreaView: View {
 
     private func handleOptionKey(_ event: NSEvent) {
         withAnimation(.bouncy(duration: 0.2)) {
-            print("has option \(event.modifierFlags.contains(.option))")
             if event.modifierFlags.contains(.option) {
-                showCollect = true
-                showDebugUI = true
+                if showCollect != true {
+                    showCollect = true
+                }
+//                showDebugUI = true
             } else {
-                showCollect = false
-                showDebugUI = false
+                if showCollect != false {
+                    showCollect = false
+                }
+//                showDebugUI = false
             }
         }
     }
@@ -83,16 +91,18 @@ struct CollectAreaView: View {
     }
 
     private func handleClick() {
-        print("handleClick \(showCollect.description)")
         guard showCollect else { return }
         let clickLocation = NSEvent.mouseLocation.flipped()
-        print("location \(clickLocation)")
+
         if let element = systemWideElement.getAtPoint(clickLocation),
            let text = try? getChildString(element: element)
             .joined(separator: " ")
             .trimmingCharacters(in: .whitespacesAndNewlines) {
 
-            guard !text.isEmpty else { return }
+             if text.isEmpty {
+                print("text is empty, skipping collect")
+                return
+            }
             print("onCollect \(text)")
             onCollect(text)
         }

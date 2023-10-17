@@ -13,12 +13,9 @@ struct RecordingContentView: View {
 
     var body: some View {
         ZStack(alignment: .bottom, content: { })
-            .floatingPanel(isPresented: .constant(true), content: {
+            .floatingPanel(isPresented: .constant(true), ignoresMouseEvents: .constant(false), content: {
                 RecordingPanelView()
             })
-        //            .floatingPanel(isPresented: .constant(true), content: {
-        //                CollectAreaContentView(onCollect: handleCollect)
-        //            })
     }
 
 }

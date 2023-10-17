@@ -48,7 +48,7 @@ struct CollectItemContentView: View {
                 }
                 Text("to start collecting")
             }
-            .floatingPanel(isPresented: .constant(true), content: {
+            .floatingPanel(isPresented: .constant(true), ignoresMouseEvents: .constant(true), content: {
                 CollectAreaView(onCollect: handleCollect)
             })
         }
@@ -74,8 +74,8 @@ struct CollectItemContentView: View {
 
     private func addItem(text: String) {
         withAnimation {
-//            let newItem = Item(text: text)
-//            modelContext.insert(newItem)
+            let newItem = CollectItem(text: text)
+            modelContext.insert(newItem)
         }
     }
 

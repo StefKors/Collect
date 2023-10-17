@@ -17,6 +17,7 @@
 		8A2C380E2ADE877A002B8A20 /* CGRect.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A2C380D2ADE877A002B8A20 /* CGRect.swift */; };
 		8A2C38102ADE87BB002B8A20 /* RecordingPanelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A2C380F2ADE87BB002B8A20 /* RecordingPanelView.swift */; };
 		8A2C38122ADE87CE002B8A20 /* DragGestureAreaRecorderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A2C38112ADE87CE002B8A20 /* DragGestureAreaRecorderView.swift */; };
+		8A2C38152ADE945C002B8A20 /* Throttler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A2C38142ADE945C002B8A20 /* Throttler.swift */; };
 		8A47C3F82A8FA70D0015F8BC /* DebugFullWindowView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A47C3F72A8FA70D0015F8BC /* DebugFullWindowView.swift */; };
 		8A47C3FB2A8FA9E40015F8BC /* AXSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 8A47C3FA2A8FA9E40015F8BC /* AXSwift */; };
 		8A47C3FD2A8FBAAB0015F8BC /* SystemWideElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A47C3FC2A8FBAAB0015F8BC /* SystemWideElement.swift */; };
@@ -44,6 +45,7 @@
 		8A2C380D2ADE877A002B8A20 /* CGRect.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CGRect.swift; sourceTree = "<group>"; };
 		8A2C380F2ADE87BB002B8A20 /* RecordingPanelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecordingPanelView.swift; sourceTree = "<group>"; };
 		8A2C38112ADE87CE002B8A20 /* DragGestureAreaRecorderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DragGestureAreaRecorderView.swift; sourceTree = "<group>"; };
+		8A2C38142ADE945C002B8A20 /* Throttler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Throttler.swift; sourceTree = "<group>"; };
 		8A47C3F72A8FA70D0015F8BC /* DebugFullWindowView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DebugFullWindowView.swift; sourceTree = "<group>"; };
 		8A47C3FC2A8FBAAB0015F8BC /* SystemWideElement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemWideElement.swift; sourceTree = "<group>"; };
 		8A6B30E32A61D765005995A6 /* Collect.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Collect.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -146,6 +148,7 @@
 		8AD7AB9D2A8B899A009D5962 /* Components */ = {
 			isa = PBXGroup;
 			children = (
+				8A2C38142ADE945C002B8A20 /* Throttler.swift */,
 				8A0FFB822A8F7E980061F481 /* CollectAreaView.swift */,
 				8A47C3F72A8FA70D0015F8BC /* DebugFullWindowView.swift */,
 				8A0FFB862A8F84F70061F481 /* DebugGridView.swift */,
@@ -237,6 +240,7 @@
 			files = (
 				8A0238B52AD01813006C8316 /* ListItem.swift in Sources */,
 				8A2C38082ADE868C002B8A20 /* CollectItem.swift in Sources */,
+				8A2C38152ADE945C002B8A20 /* Throttler.swift in Sources */,
 				8A0FFB832A8F7E980061F481 /* CollectAreaView.swift in Sources */,
 				8A0FFB872A8F84F70061F481 /* DebugGridView.swift in Sources */,
 				8A0238A72AD002CF006C8316 /* LinkItemContentView.swift in Sources */,

@@ -10,8 +10,9 @@ import SwiftUI
 class FullScreenWindowController<Content: View>: NSWindowController {
     init(view: () -> Content,
          contentRect: NSRect,
-         isPresented: Binding<Bool>) {
-        super.init(window: FloatingPanel(view: view, contentRect: contentRect, isPresented: isPresented))
+         isPresented: Binding<Bool>,
+         ignoresMouseEvents: Binding<Bool>) {
+        super.init(window: FloatingPanel(view: view, contentRect: contentRect, isPresented: isPresented, ignoresMouseEvents: ignoresMouseEvents))
         // Remove the window header
         window?.styleMask = .borderless
         /// Enable drawing/positioning on top of the menubar
@@ -34,7 +35,8 @@ class FloatingPanel<Content: View>: NSWindow {
          contentRect: NSRect,
          backing: NSWindow.BackingStoreType = .buffered,
          defer flag: Bool = true,
-         isPresented: Binding<Bool>) {
+         isPresented: Binding<Bool>,
+         ignoresMouseEvents: Binding<Bool>) {
         /// Initialize the binding variable by assigning the whole value via an underscore
         self._isPresented = isPresented
 
@@ -48,7 +50,7 @@ class FloatingPanel<Content: View>: NSWindow {
             defer: flag
         )
         self.isOpaque = false;
-//        self.ignoresMouseEvents = true
+        self.ignoresMouseEvents = ignoresMouseEvents.wrappedValue
         self.hasShadow = false;
         self.backgroundColor = .clear;
 
@@ -66,9 +68,10 @@ extension View {
      - Parameter content: The displayed content
      **/
     func floatingPanel<Content: View>(isPresented: Binding<Bool>,
+                                      ignoresMouseEvents: Binding<Bool>,
                                       // collectRect: Binding<CGRect>,
                                       @ViewBuilder content: @escaping () -> Content) -> some View {
-        self.modifier(FloatingPanelModifier(isPresented: isPresented, view: content))
+        self.modifier(FloatingPanelModifier(isPresented: isPresented, ignoresMouseEvents: ignoresMouseEvents, view: content))
     }
 }
 
@@ -89,6 +92,9 @@ fileprivate struct FloatingPanelModifier<PanelContent: View>: ViewModifier {
     /// Determines wheter the panel should be presented or not
     @Binding var isPresented: Bool
 
+    /// Determines wheter the panel ignores mouse events or not
+    @Binding var ignoresMouseEvents: Bool
+
     /// Holds the panel content's view closure
     @ViewBuilder let view: () -> PanelContent
 
@@ -99,7 +105,7 @@ fileprivate struct FloatingPanelModifier<PanelContent: View>: ViewModifier {
         content
             .task {
                 let screenFrame = NSScreen.main?.frame ?? .zero
-                panel = FullScreenWindowController(view: view, contentRect: screenFrame, isPresented: $isPresented)
+                panel = FullScreenWindowController(view: view, contentRect: screenFrame, isPresented: $isPresented, ignoresMouseEvents: $ignoresMouseEvents)
             }.onDisappear {
                 /// When the view disappears, close and kill the panel
                 panel?.close()

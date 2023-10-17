@@ -10,8 +10,8 @@ import SwiftData
 
 @Model
 final class CollectItem {
+    @Attribute(.unique) let timestamp: Date
     let text: String
-    let timestamp: Date
 
     init(text: String, timestamp: Date = .now) {
         self.text = text
