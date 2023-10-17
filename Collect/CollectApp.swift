@@ -13,8 +13,8 @@ struct CollectApp: App {
 
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            CollectItemContentView()
         }
-        .modelContainer(for: LinkItem.self)
+        .modelContainer(for: [LinkItem.self, CollectItem.self])
     }
 }

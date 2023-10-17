@@ -8,7 +8,7 @@
 import SwiftUI
 import SwiftData
 
-struct ContentView: View {
+struct LinkItemContentView: View {
     @Environment(\.modelContext) private var modelContext
     @Environment(\.openURL) private var openURL
     
@@ -68,11 +68,6 @@ struct ContentView: View {
 }
 
 #Preview {
-    ContentView()
+    LinkItemContentView()
         .modelContainer(for: LinkItem.self, inMemory: true)
-}
-
-
-#Preview {
-    ContentView()
 }

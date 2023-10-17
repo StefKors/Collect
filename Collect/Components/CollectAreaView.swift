@@ -10,7 +10,7 @@ import AXSwift
 import Cocoa
 
 
-struct CollectAreaContentView: View {
+struct CollectAreaView: View {
     @AppStorage("showDebugUI") private var showDebugUI: Bool = false
     @State private var mouseLocation: NSPoint = .zero
     @State private var origin: NSPoint = NSPoint(x: 0, y: 0)
@@ -21,13 +21,13 @@ struct CollectAreaContentView: View {
 
     var body: some View {
         ZStack() {
-            if showDebugUI {
-                DebugFullWindowView()
-                    .overlay(alignment: .bottomTrailing) {
-                        DebugGridView(mouseLocation: $mouseLocation, origin: $origin, size: $size)
-                            .scenePadding()
-                    }
-            }
+//            if showDebugUI {
+//                DebugFullWindowView()
+//                    .overlay(alignment: .bottomTrailing) {
+//                        DebugGridView(mouseLocation: $mouseLocation, origin: $origin, size: $size)
+//                            .scenePadding()
+//                    }
+//            }
 
             RoundedRectangle(cornerRadius: 8)
                 .strokeBorder(Color.accentColor.opacity(0.6), lineWidth: 2)
@@ -56,6 +56,7 @@ struct CollectAreaContentView: View {
 
     private func handleOptionKey(_ event: NSEvent) {
         withAnimation(.bouncy(duration: 0.2)) {
+            print("has option \(event.modifierFlags.contains(.option))")
             if event.modifierFlags.contains(.option) {
                 showCollect = true
                 showDebugUI = true
@@ -82,10 +83,10 @@ struct CollectAreaContentView: View {
     }
 
     private func handleClick() {
-        print("handleClick")
+        print("handleClick \(showCollect.description)")
         guard showCollect else { return }
         let clickLocation = NSEvent.mouseLocation.flipped()
-
+        print("location \(clickLocation)")
         if let element = systemWideElement.getAtPoint(clickLocation),
            let text = try? getChildString(element: element)
             .joined(separator: " ")
@@ -135,5 +136,5 @@ struct CollectAreaContentView: View {
 }
 
 #Preview {
-    CollectAreaContentView(onCollect: { _ in })
+    CollectAreaView(onCollect: { _ in })
 }
