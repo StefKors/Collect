@@ -12,9 +12,11 @@ import SwiftData
 final class CollectItem {
     @Attribute(.unique) let timestamp: Date
     let text: String
+    let attributes: [AXAttribute: String] = [:]
 
-    init(text: String, timestamp: Date = .now) {
+    init(text: String, attributes: [AXAttribute: String] = [:], timestamp: Date = .now) {
         self.text = text
         self.timestamp = timestamp
+        self.attributes = attributes
     }
 }

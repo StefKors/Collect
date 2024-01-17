@@ -14,22 +14,22 @@ struct CollectItemContentView: View {
 
     @State private var collect: Bool = false
 
+    @State private var selection: CollectItem.ID? = nil
+
     var body: some View {
         NavigationView {
-            List {
+            List(selection: $selection) {
                 ForEach(items) { item in
                     NavigationLink {
-                        VStack {
-                            Text("Item at \(item.timestamp, format: Date.FormatStyle(date: .numeric, time: .standard))")
-                            Text(item.text)
-                        }
-                        .toolbar(content: {
-                            ToolbarItem {
-                                Button("Remove item") {
-                                    deleteItem(item)
+                        DetailItemView(item: item)
+                            .toolbar(content: {
+                                ToolbarItem {
+                                    Button("Remove item") {
+                                        deleteItem(item)
+                                        selection = items.first?.id
+                                    }
                                 }
-                            }
-                        })
+                            })
                     } label: {
                         // Text(item.timestamp, format: Date.FormatStyle(date: .numeric, time: .standard))
                         Text(item.text)
@@ -55,27 +55,25 @@ struct CollectItemContentView: View {
         .toolbar(content: {
             ToolbarItem {
                 Button {
-                    
+
                 } label: {
                     Label("Information", systemImage: "info.circle.fill")
                 }
             }
         })
-
     }
 
-    private func handleCollect(_ text: String) {
-        addItem(text: text)
+    private func handleCollect(_ item: CollectItem) {
+        addItem(item: item)
     }
 
     private func enableCollect() {
         collect.toggle()
     }
 
-    private func addItem(text: String) {
+    private func addItem(item: CollectItem) {
         withAnimation {
-            let newItem = CollectItem(text: text)
-            modelContext.insert(newItem)
+            modelContext.insert(item)
         }
     }
 
