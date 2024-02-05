@@ -78,8 +78,8 @@
             filePath = "Collect/Components/CollectAreaView.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "124"
-            endingLineNumber = "124"
+            startingLineNumber = "144"
+            endingLineNumber = "144"
             landmarkName = "handleClick(_:)"
             landmarkType = "7">
          </BreakpointContent>

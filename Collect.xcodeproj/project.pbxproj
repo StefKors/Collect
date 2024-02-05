@@ -37,6 +37,11 @@
 		8A6B30EE2A61D768005995A6 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 8A6B30ED2A61D768005995A6 /* Preview Assets.xcassets */; };
 		8A6B30F02A61D768005995A6 /* LinkItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A6B30EF2A61D768005995A6 /* LinkItem.swift */; };
 		8A6B30FB2A61D83B005995A6 /* EventMonitor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A6B30FA2A61D83B005995A6 /* EventMonitor.swift */; };
+		8A7AEC702B70DC6100318AFD /* PdfDeepLinkView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A7AEC6F2B70DC6100318AFD /* PdfDeepLinkView.swift */; };
+		8A7AEC722B70EDE800318AFD /* CreateHighlightedImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A7AEC712B70EDE800318AFD /* CreateHighlightedImage.swift */; };
+		8A7AEC752B70EE1400318AFD /* Extractor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A7AEC742B70EE1400318AFD /* Extractor.swift */; };
+		8A7AEC772B70EE1D00318AFD /* PDFSearch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A7AEC762B70EE1D00318AFD /* PDFSearch.swift */; };
+		8A7AEC792B70EE2D00318AFD /* Tokenizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A7AEC782B70EE2C00318AFD /* Tokenizer.swift */; };
 		8A87F6F62ABC802A004305F6 /* CollectItemContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A87F6F52ABC802A004305F6 /* CollectItemContentView.swift */; };
 		8A87F6F82ABC8711004305F6 /* ScreenRecorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A87F6F72ABC8711004305F6 /* ScreenRecorder.swift */; };
 		8A87F6FA2ABC8A0F004305F6 /* RecordingToolBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A87F6F92ABC8A0F004305F6 /* RecordingToolBarView.swift */; };
@@ -78,6 +83,11 @@
 		8A6B30EF2A61D768005995A6 /* LinkItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinkItem.swift; sourceTree = "<group>"; };
 		8A6B30F12A61D768005995A6 /* Collect.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Collect.entitlements; sourceTree = "<group>"; };
 		8A6B30FA2A61D83B005995A6 /* EventMonitor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EventMonitor.swift; sourceTree = "<group>"; };
+		8A7AEC6F2B70DC6100318AFD /* PdfDeepLinkView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PdfDeepLinkView.swift; sourceTree = "<group>"; };
+		8A7AEC712B70EDE800318AFD /* CreateHighlightedImage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CreateHighlightedImage.swift; sourceTree = "<group>"; };
+		8A7AEC742B70EE1400318AFD /* Extractor.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Extractor.swift; sourceTree = "<group>"; };
+		8A7AEC762B70EE1D00318AFD /* PDFSearch.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PDFSearch.swift; sourceTree = "<group>"; };
+		8A7AEC782B70EE2C00318AFD /* Tokenizer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Tokenizer.swift; sourceTree = "<group>"; };
 		8A87F6F52ABC802A004305F6 /* CollectItemContentView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CollectItemContentView.swift; sourceTree = "<group>"; };
 		8A87F6F72ABC8711004305F6 /* ScreenRecorder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScreenRecorder.swift; sourceTree = "<group>"; };
 		8A87F6F92ABC8A0F004305F6 /* RecordingToolBarView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RecordingToolBarView.swift; sourceTree = "<group>"; };
@@ -148,6 +158,7 @@
 		8A6B30E52A61D765005995A6 /* Collect */ = {
 			isa = PBXGroup;
 			children = (
+				8A7AEC732B70EDF900318AFD /* PDF */,
 				8A140AB02B57FA4E0003B08A /* AXSwift */,
 				8A2C38132ADE88A9002B8A20 /* ContentViews */,
 				8AD7AB9D2A8B899A009D5962 /* Components */,
@@ -182,6 +193,17 @@
 			path = Extensions;
 			sourceTree = "<group>";
 		};
+		8A7AEC732B70EDF900318AFD /* PDF */ = {
+			isa = PBXGroup;
+			children = (
+				8A7AEC742B70EE1400318AFD /* Extractor.swift */,
+				8A7AEC782B70EE2C00318AFD /* Tokenizer.swift */,
+				8A7AEC762B70EE1D00318AFD /* PDFSearch.swift */,
+				8A7AEC712B70EDE800318AFD /* CreateHighlightedImage.swift */,
+			);
+			path = PDF;
+			sourceTree = "<group>";
+		};
 		8AD7AB9D2A8B899A009D5962 /* Components */ = {
 			isa = PBXGroup;
 			children = (
@@ -199,6 +221,7 @@
 				8A1F994C2B582CAA000D8258 /* DetailItemView.swift */,
 				8A1F994E2B582D19000D8258 /* HierarchyRectView.swift */,
 				8A1F99502B582D29000D8258 /* ChildElementRectView.swift */,
+				8A7AEC6F2B70DC6100318AFD /* PdfDeepLinkView.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -281,22 +304,27 @@
 				8A140ABA2B57FA580003B08A /* Observer.swift in Sources */,
 				8A140ABE2B57FA580003B08A /* AXSwift.swift in Sources */,
 				8A1F99532B582D3E000D8258 /* ElementRectView.swift in Sources */,
+				8A7AEC772B70EE1D00318AFD /* PDFSearch.swift in Sources */,
 				8A0238B52AD01813006C8316 /* ListItem.swift in Sources */,
 				8A1F99512B582D29000D8258 /* ChildElementRectView.swift in Sources */,
 				8A2C38082ADE868C002B8A20 /* CollectItem.swift in Sources */,
+				8A7AEC752B70EE1400318AFD /* Extractor.swift in Sources */,
 				8A2C38152ADE945C002B8A20 /* Throttler.swift in Sources */,
 				8A0FFB832A8F7E980061F481 /* CollectAreaView.swift in Sources */,
 				8A0FFB872A8F84F70061F481 /* DebugGridView.swift in Sources */,
 				8A140AB92B57FA580003B08A /* Constants.swift in Sources */,
 				8A0238A72AD002CF006C8316 /* LinkItemContentView.swift in Sources */,
 				8A140ABD2B57FA580003B08A /* Application.swift in Sources */,
+				8A7AEC722B70EDE800318AFD /* CreateHighlightedImage.swift in Sources */,
 				8A87F6FA2ABC8A0F004305F6 /* RecordingToolBarView.swift in Sources */,
 				8A87F6F82ABC8711004305F6 /* ScreenRecorder.swift in Sources */,
 				8A2C380E2ADE877A002B8A20 /* CGRect.swift in Sources */,
 				8A2C38102ADE87BB002B8A20 /* RecordingPanelView.swift in Sources */,
 				8A2C38122ADE87CE002B8A20 /* DragGestureAreaRecorderView.swift in Sources */,
+				8A7AEC792B70EE2D00318AFD /* Tokenizer.swift in Sources */,
 				8A140ABB2B57FA580003B08A /* SystemWideElement.swift in Sources */,
 				8A6B30E92A61D765005995A6 /* RecordingContentView.swift in Sources */,
+				8A7AEC702B70DC6100318AFD /* PdfDeepLinkView.swift in Sources */,
 				8A6B30FB2A61D83B005995A6 /* EventMonitor.swift in Sources */,
 				8AD7AB9C2A8B898A009D5962 /* NSPoint.swift in Sources */,
 				8A1F994D2B582CAA000D8258 /* DetailItemView.swift in Sources */,

@@ -8,17 +8,14 @@
 import SwiftUI
 import SwiftData
 
-struct CollectItemContentView: View {
+struct CollectHistoryContentView: View {
     @Environment(\.modelContext) private var modelContext
+
     @Query private var items: [CollectItem]
-
-    @State private var collect: Bool = false
-
-    @State private var selection: CollectItem.ID? = nil
 
     var body: some View {
         NavigationView {
-            List(selection: $selection) {
+            List() {
                 ForEach(items) { item in
                     NavigationLink {
                         DetailItemView(item: item)
@@ -26,7 +23,7 @@ struct CollectItemContentView: View {
                                 ToolbarItem {
                                     Button("Remove item") {
                                         deleteItem(item)
-                                        selection = items.first?.id
+                                        //                                        selection = items.first?.id
                                     }
                                 }
                             })
@@ -41,16 +38,16 @@ struct CollectItemContentView: View {
             }
 
 
-            HStack {
-                Text("Press")
-                GroupBox {
-                    Text("⌥")
+            VStack {
+                PdfDeepLinkView()
+                HStack {
+                    Text("Press")
+                    GroupBox {
+                        Text("⌥")
+                    }
+                    Text("to start collecting")
                 }
-                Text("to start collecting")
             }
-            .floatingPanel(isPresented: .constant(true), ignoresMouseEvents: .constant(true), content: {
-                CollectAreaView(onCollect: handleCollect)
-            })
         }
         .toolbar(content: {
             ToolbarItem {
@@ -60,21 +57,18 @@ struct CollectItemContentView: View {
                     Label("Information", systemImage: "info.circle.fill")
                 }
             }
+
+            ToolbarItem {
+                Button(action: {
+                    for item in items {
+                        deleteItem(item)
+                    }
+                }, label: {
+                    Text("Delete all items")
+                        .foregroundStyle(.red)
+                })
+            }
         })
-    }
-
-    private func handleCollect(_ item: CollectItem) {
-        addItem(item: item)
-    }
-
-    private func enableCollect() {
-        collect.toggle()
-    }
-
-    private func addItem(item: CollectItem) {
-        withAnimation {
-            modelContext.insert(item)
-        }
     }
 
     private func deleteItem(_ item: CollectItem) {
@@ -88,6 +82,27 @@ struct CollectItemContentView: View {
             for index in offsets {
                 modelContext.delete(items[index])
             }
+        }
+    }
+}
+
+#Preview {
+    CollectHistoryContentView()
+}
+
+struct CollectItemContentView: View {
+    @Environment(\.modelContext) private var modelContext
+
+    var body: some View {
+        CollectHistoryContentView()
+            .floatingPanel(isPresented: .constant(true), ignoresMouseEvents: .constant(true), content: {
+                CollectAreaView(onCollect: handleCollect)
+            })
+    }
+
+    private func handleCollect(_ item: CollectItem) {
+        withAnimation {
+            modelContext.insert(item)
         }
     }
 }

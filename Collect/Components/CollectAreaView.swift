@@ -9,17 +9,35 @@ import SwiftUI
 import Cocoa
 import os
 
+
+extension NSEvent {
+    func exclusivelyContains(_ flag: ModifierFlags) -> Bool {
+        return self.modifierFlags.intersection(.deviceIndependentFlagsMask) == .option
+    }
+}
+
 struct CollectRules {
-    static let minRectSize: CGSize = CGSize(width: 50, height: 20)
+    static let minRectSize: CGSize = CGSize(width: 20, height: 5)
 }
 
 struct CollectAreaView: View {
     @AppStorage("showDebugUI") private var showDebugUI: Bool = false
+    
+    /// Target element
+    @State private var label: String? = nil
     @State private var mouseLocation: NSPoint = .zero
     @State private var origin: NSPoint = NSPoint(x: 0, y: 0)
     @State private var size: CGSize = CGSize(width: 200, height: 200)
     @State private var showCollect: Bool = false
+
+
+    /// Collected / Selected element
     @State private var element: UIElement? = nil
+
+
+    /// Deduping store
+    @State private var lastStore: String? = nil
+
 
     private let logger = Logger(
         subsystem: Bundle.main.bundleIdentifier!,
@@ -38,7 +56,7 @@ struct CollectAreaView: View {
                     }
             }
 
-            ElementRectView(origin: origin, size: size, showCollect: showCollect)
+            ElementRectView(label: label, origin: origin, size: size, showCollect: showCollect)
 
             if let element {
                 HierarchyRectView(element: element)
@@ -63,7 +81,7 @@ struct CollectAreaView: View {
 
     private func handleOptionKey(_ event: NSEvent) {
         withAnimation(.bouncy(duration: 0.2)) {
-            if event.modifierFlags.contains(.option) {
+            if event.exclusivelyContains(.option) {
                 if showCollect != true {
                     showCollect = true
                 }
@@ -91,17 +109,14 @@ struct CollectAreaView: View {
             return
         }
 
+        self.label = try? element.attribute(.roleDescription)
+
         let renderFramer = frame.insetBy(dx: -4, dy: -4)
 
         withAnimation(.snappy(duration: 0.1)) {
             self.origin = renderFramer.origin
-        }
-
-        withAnimation(.snappy(duration: 0.24)) {
             self.size = renderFramer.size
         }
-
-//        self.element = element
     }
 
     private func handleClick(_ event: NSEvent) {
@@ -115,18 +130,25 @@ struct CollectAreaView: View {
 
             self.element = clickElement
 
-
-
              if text.isEmpty {
                 print("text is empty, skipping collect")
                 return
             }
+
+            // Dedupe naively
+            if text == lastStore {
+                return
+            }
+
+            lastStore = text
 //            let attrs = clickElement.inspectDict
 //            print("onCollect \(attrs)")
             let newItem = CollectItem(text: text, attributes: clickElement.inspectDict)
             onCollect(newItem)
         }
     }
+
+
 
     /// Recursively fetches the combined values of all text string of all children. Could be slow, keep out of hotpath.
     func getSumString(element: UIElement) -> [String] {

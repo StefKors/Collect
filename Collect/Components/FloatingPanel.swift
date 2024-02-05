@@ -104,6 +104,7 @@ fileprivate struct FloatingPanelModifier<PanelContent: View>: ViewModifier {
     func body(content: Content) -> some View {
         content
             .task {
+                /// TODO: this might create multiple windows when parent view re-renders, figure out a way to dedupe
                 let screenFrame = NSScreen.main?.frame ?? .zero
                 panel = FullScreenWindowController(view: view, contentRect: screenFrame, isPresented: $isPresented, ignoresMouseEvents: $ignoresMouseEvents)
             }.onDisappear {
