@@ -3,7 +3,7 @@
 //  Collect
 //
 //  Created by Stef Kors on 18/08/2023.
-//
+// /// https://developer.apple.com/documentation/appkit/nsaccessibilityprotocol/1525917-accessibilityurl
 
 import SwiftUI
 import Cocoa
@@ -34,10 +34,8 @@ struct CollectAreaView: View {
     /// Collected / Selected element
     @State private var element: UIElement? = nil
 
-
     /// Deduping store
     @State private var lastStore: String? = nil
-
 
     private let logger = Logger(
         subsystem: Bundle.main.bundleIdentifier!,
@@ -59,10 +57,13 @@ struct CollectAreaView: View {
             ElementRectView(label: label, origin: origin, size: size, showCollect: showCollect)
 
             if let element {
-                HierarchyRectView(element: element)
-                    .task(id: element.inspect) {
-                        print("render element view")
-                    }
+                HierarchyRectView(element: element, level: 0)
+//                ChildElementRectView(element: element)
+
+//                ElementRectView(origin: elementFrame.origin, size: elementFrame.size, showCollect: showCollect)
+//                    .task(id: elementFrame) {
+//                        print("render element view")
+//                    }
             }
         }
         .ignoresSafeArea(.all)
@@ -124,27 +125,29 @@ struct CollectAreaView: View {
         let clickLocation = NSEvent.mouseLocation.flipped()
 
         if let clickElement = systemWideElement.getAtPoint(clickLocation) {
-            let text = getSumString(element: clickElement)
-                .joined(separator: " ")
-                .trimmingCharacters(in: .whitespaces)
-
+            print("update clickElement")
             self.element = clickElement
 
-             if text.isEmpty {
-                print("text is empty, skipping collect")
-                return
-            }
 
-            // Dedupe naively
-            if text == lastStore {
-                return
-            }
-
-            lastStore = text
-//            let attrs = clickElement.inspectDict
-//            print("onCollect \(attrs)")
-            let newItem = CollectItem(text: text, attributes: clickElement.inspectDict)
-            onCollect(newItem)
+//            let text = getSumString(element: clickElement)
+//                .joined(separator: " ")
+//                .trimmingCharacters(in: .whitespaces)
+//
+//             if text.isEmpty {
+//                print("text is empty, skipping collect")
+//                return
+//            }
+//
+//            // Dedupe naively
+//            if text == lastStore {
+//                return
+//            }
+//
+//            lastStore = text
+////            let attrs = clickElement.inspectDict
+////            print("onCollect \(attrs)")
+//            let newItem = CollectItem(text: text, attributes: clickElement.inspectDict)
+//            onCollect(newItem)
         }
     }
 

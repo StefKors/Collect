@@ -1,5 +1,7 @@
 import Cocoa
 import Foundation
+import ApplicationServices.HIServices
+import ApplicationServices.HIServices.AXUIElement
 
 /// Holds and interacts with any accessibility element.
 ///

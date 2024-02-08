@@ -9,18 +9,24 @@ import SwiftUI
 
 struct HierarchyRectView: View {
     let element: UIElement
+    var level: Int
 
-    var children: [UIElement] {
+    private var children: [UIElement] {
         let childs: [AXUIElement] = (try? element.attribute(.children)) ?? []
         return childs.map { el in
             UIElement(el)
         }
     }
+
+    private var childrenLevel: Int {
+        level + 1
+    }
+
     var body: some View {
         ZStack {
-            ChildElementRectView(element: element)
+            ChildElementRectView(element: element, level: level)
             ForEach(children, id: \.inspect) { child in
-                HierarchyRectView(element: child)
+                HierarchyRectView(element: child, level: childrenLevel)
             }
         }
     }
