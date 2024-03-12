@@ -7,9 +7,26 @@
 
 import SwiftUI
 
+struct PerpectiveInfo: Codable, Hashable {
+    let degrees: Double
+    let pointX: Double
+    let pointY: Double
+}
+
+private struct PerspectiveInfoKey: EnvironmentKey {
+    static let defaultValue = PerpectiveInfo(degrees: 0, pointX: 0, pointY: 0)
+}
+
+extension EnvironmentValues {
+    var perspectiveInfo: PerpectiveInfo {
+        get { self[PerspectiveInfoKey.self] }
+        set { self[PerspectiveInfoKey.self] = newValue }
+    }
+}
+
+
 struct PerspectiveView: View {
-    @State private var point = CGPoint(x: 0, y: 0)
-    @State private var degrees: Double = 0
+    @State private var perspective = PerpectiveInfo(degrees: 0, pointX: 0, pointY: 0)
     @State private var draging: Bool = false
 
     var body: some View {
@@ -17,61 +34,46 @@ struct PerspectiveView: View {
             ZStack {
 
                 ElementRectView(label: "group", level: 0, origin: .init(x: 120, y: 120), size: CGSize(width: 200, height: 80), showCollect: true)
-                    .rotation3DEffect(
-                        .degrees(degrees),
-                        axis: (x: point.x, y: point.y, z: 0),
-                        anchor: .center,
-                        anchorZ: 0,
-                        perspective: 1
-                    )
+
                 ElementRectView(label: "text", level: 1, origin: .init(x: 140, y: 160), size: CGSize(width: 100, height: 30), showCollect: true)
-                    .rotation3DEffect(
-                        .degrees(degrees),
-                        axis: (x: point.x, y: point.y, z: 0),
-                        anchor: .center,
-                        anchorZ: -50,
-                        perspective: 1
-                    )
+
                 ElementRectView(label: "text", level: 2, origin: .init(x: 260, y: 150), size: CGSize(width: 100, height: 30), showCollect: true)
-                    .rotation3DEffect(
-                        .degrees(degrees),
-                        axis: (x: point.x, y: point.y, z: 0),
-                        anchor: .center,
-                        anchorZ: -100,
-                        perspective: 1
-                    )
+
             }
+            .environment(\.perspectiveInfo, perspective)
+            .simultaneousGesture(
+                DragGesture(minimumDistance: 0)
+                    .onChanged({
+                        gesture in
+                        let centerX = proxy.size.width / 2
+                        let centerY = proxy.size.height / 2
 
-                .simultaneousGesture(
-                    DragGesture(minimumDistance: 0)
-                        .onChanged({ gesture in
-                            let centerX = proxy.size.width / 2
-                            let centerY = proxy.size.height / 2
+                        let x = 0 - (gesture.location.y / centerY - 1)
+                        let y = (gesture.location.x / centerX - 1)
 
-                            let x = 0 - (gesture.location.y / centerY - 1)
-                            let y = (gesture.location.x / centerX - 1)
+                        let x1 = gesture.location.x - centerX
+                        let y1 = gesture.location.y - centerY
 
-                            let x1 = gesture.location.x - centerX
-                            let y1 = gesture.location.y - centerY
+                        let range = sqrt(x1 * x1 + y1 * y1)
+                        let degreesFactor = range / sqrt(2 * centerX * centerX)
 
-                            let range = sqrt(x1 * x1 + y1 * y1)
-                            let degreesFactor = range / sqrt(2 * centerX * centerX)
-
-                            withAnimation {
-                                point = CGPoint(x: x, y: y)
-                                degrees = Double(30 * degreesFactor.clamped(0, 1))
-                            }
-                            draging = true
-                        })
-                        .onEnded(onDragEndedAction(gesture:))
-                )
+                        withAnimation {
+                            perspective = PerpectiveInfo(
+                                degrees: Double(30 * degreesFactor.clamped(0, 1)),
+                                pointX: x,
+                                pointY: y
+                            )
+                        }
+                        draging = true
+                    })
+                    .onEnded(onDragEndedAction(gesture:))
+            )
         }
 
     }
     private func onDragEndedAction(gesture: DragGesture.Value) -> Void {
         withAnimation {
-            point = CGPoint(x: 0, y: 0)
-            degrees = 0
+            perspective = PerpectiveInfo(degrees: 0, pointX: 0, pointY: 0)
         }
         draging = false
     }
@@ -93,6 +95,8 @@ struct ElementRectView: View {
     let origin: NSPoint
     let size: CGSize
     let showCollect: Bool
+
+    @Environment(\.perspectiveInfo) private var info
 
     private let radius: CGFloat = 8
 
@@ -127,7 +131,7 @@ struct ElementRectView: View {
                     .foregroundColor(levelColor.opacity(0.3))
                     .overlay(alignment: .topLeading) {
                         if let label {
-                            Text(label.capitalized)
+                            Text(label.capitalized + " " + level.description)
                                 .bold()
                                 .padding(.horizontal, 10)
                                 .padding(.top, 4)
@@ -151,6 +155,14 @@ struct ElementRectView: View {
             .position(origin)
             .offset(x: size.width/2, y: size.height/2)
             .opacity(showCollect ? 1 : 0)
+            .compositingGroup()
+            .rotation3DEffect(
+                .degrees(info.degrees),
+                axis: (x: info.pointX, y: info.pointY, z: 0),
+                anchor: .center,
+                anchorZ: -CGFloat(level * 50),
+                perspective: 1
+            )
     }
 
 //    var colours: [Color] = [

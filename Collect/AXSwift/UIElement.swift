@@ -3,6 +3,8 @@ import Foundation
 import ApplicationServices.HIServices
 import ApplicationServices.HIServices.AXUIElement
 
+// alternative ax reference that might be interesting: https://github.com/mickael-menu/ShadowVim/tree/develop/Sources/AX
+
 /// Holds and interacts with any accessibility element.
 ///
 /// This class wraps every operation that operates on AXUIElements.

@@ -39,7 +39,6 @@ struct CollectHistoryContentView: View {
 
 
             VStack {
-                PdfDeepLinkView()
                 HStack {
                     Text("Press")
                     GroupBox {

@@ -158,6 +158,54 @@ public enum Subrole: String, Codable {
     case toggle               = "AXToggle"
     case switchSubrole        = "AXSwitch"
     case descriptionList      = "AXDescriptionList"
+
+
+    // Standard subroles
+
+   case closeButtonSubrole =  "AXCloseButtonSubrole"
+   case minimizeButtonSubrole =  "AXMinimizeButtonSubrole"
+   case zoomButtonSubrole =  "AXZoomButtonSubrole"
+   case toolbarButtonSubrole =  "AXToolbarButtonSubrole"
+   case fullSubrole =  "AXFullScreenButtonSubrole"
+   case secureTextFieldSubrole =  "AXSecureTextFieldSubrole"
+   case tableRowSubrole =  "AXTableRowSubrole"
+   case outlineRowSubrole =  "AXOutlineRowSubrole"
+   case unknownSubrole =  "AXUnknownSubrole"
+
+    // New subroles
+
+   case standardWindowSubrole =  "AXStandardWindowSubrole"
+   case dialogSubrole =  "AXDialogSubrole"
+   case systemDialogSubrole =  "AXSystemDialogSubrole"
+   case floatingWindowSubrole =  "AXFloatingWindowSubrole"
+   case systemFloatingWindowSubrole =  "AXSystemFloatingWindowSubrole"
+   case decorativeSubrole =  "AXDecorativeSubrole"
+   case incrementArrowSubrole =  "AXIncrementArrowSubrole"
+   case decrementArrowSubrole =  "AXDecrementArrowSubrole"
+   case incrementPageSubrole =  "AXIncrementPageSubrole"
+   case decrementPageSubrole =  "AXDecrementPageSubrole"
+   case sortButtonSubrole =  "AXSortButtonSubrole"
+   case searchFieldSubrole =  "AXSearchFieldSubrole"
+   case timelineSubrole =  "AXTimelineSubrole"
+   case ratingIndicatorSubrole =  "AXRatingIndicatorSubrole"
+   case contentListSubrole =  "AXContentListSubrole"
+    // Superseded by kAXDescriptionListSubrole in OS X 10.9
+   case definitionListSubrole =  "AXDefinitionListSubrole"
+    // OS X 10.9 and later
+   case descriptionListSubrole =  "AXDescriptionListSubrole"
+   case toggleSubrole =  "AXToggleSubrole"
+
+    // Dock subroles
+
+   case applicationDockItemSubrole =  "AXApplicationDockItemSubrole"
+   case documentDockItemSubrole =  "AXDocumentDockItemSubrole"
+   case folderDockItemSubrole =  "AXFolderDockItemSubrole"
+   case minimizedWindowDockItemSubrole =  "AXMinimizedWindowDockItemSubrole"
+   case urlDockItemSubrole =  "AXURLDockItemSubrole"
+   case dockExtraDockItemSubrole =  "AXDockExtraDockItemSubrole"
+   case trashDockItemSubrole =  "AXTrashDockItemSubrole"
+   case separatorDockItemSubrole =  "AXSeparatorDockItemSubrole"
+   case processSubrole =  "AXProcessSwitcherListSubrole"
 }
 
 /// Orientations returned by the orientation property.
@@ -405,6 +453,8 @@ public enum AXAttribute: String, Codable {
     case focusableAncestor = "AXFocusableAncestor"
     case ariaControls = "AXARIAControls"
     case endTextMarker = "AXEndTextMarker"
+
+    case axPath = "AXPath" // https://github.com/appium/appium-for-mac/blob/master/README.md
 }
 
 /// All actions a `UIElement` can support.
