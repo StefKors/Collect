@@ -7,6 +7,37 @@
 
 import SwiftUI
 
+struct ElementRectLabel: View {
+    let label: String
+
+    private let levelColor: Color = Color.accentColor
+    private let radius: CGFloat = 8
+
+    var body: some View {
+        Text(label.capitalized)
+            .bold()
+            .padding(.horizontal, 10)
+            .padding(.top, 4)
+            .padding(.bottom, 6)
+            .foregroundStyle(Color(nsColor: .textBackgroundColor))
+            .background(
+                UnevenRoundedRectangle(
+                    topLeadingRadius: radius,
+                    bottomLeadingRadius: 0,
+                    bottomTrailingRadius: 0,
+                    topTrailingRadius: radius,
+                    style: .continuous
+                )
+                .foregroundColor(levelColor)
+            )
+            .offset(x: 0, y: -25.0)
+    }
+}
+
+#Preview {
+    ElementRectLabel(label: "group")
+}
+
 
 struct ElementRectView: View {
     var label: String? = nil
@@ -34,13 +65,6 @@ struct ElementRectView: View {
     }
 
     private let levelColor: Color = Color.accentColor
-//    {
-//        if level < colours.count {
-//            return colours[level]
-//        }
-//
-//        return Color.accentColor
-//    }
 
     var body: some View {
         shape
@@ -50,23 +74,9 @@ struct ElementRectView: View {
                     .foregroundColor(levelColor.opacity(0.3))
                     .overlay(alignment: .topLeading) {
                         if let label {
-                            Text(label.capitalized + " " + level.description)
-                                .bold()
-                                .padding(.horizontal, 10)
-                                .padding(.top, 4)
-                                .padding(.bottom, 6)
-                                .foregroundStyle(Color(nsColor: .textBackgroundColor))
-                                .background(
-                                    UnevenRoundedRectangle(
-                                        topLeadingRadius: radius,
-                                        bottomLeadingRadius: 0,
-                                        bottomTrailingRadius: 0,
-                                        topTrailingRadius: radius,
-                                        style: .continuous
-                                    )
-                                    .foregroundColor(levelColor)
-                                )
-                                .offset(x: 0, y: -25.0)
+                            ElementRectLabel(label: label)
+                                .compositingGroup()
+                                .id(label)
                         }
                     }
             )
@@ -74,7 +84,6 @@ struct ElementRectView: View {
             .position(origin)
             .offset(x: size.width/2, y: size.height/2)
             .opacity(showCollect ? 1 : 0)
-            .compositingGroup()
             .rotation3DEffect(
                 .degrees(info.degrees),
                 axis: (x: info.pointX, y: info.pointY, z: 0),
@@ -82,6 +91,7 @@ struct ElementRectView: View {
                 anchorZ: -CGFloat(level * 50),
                 perspective: 1
             )
+            .compositingGroup()
     }
 
 //    var colours: [Color] = [

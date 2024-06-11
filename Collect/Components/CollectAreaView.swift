@@ -11,9 +11,9 @@ import os
 
 
 extension NSEvent {
-    func exclusivelyContains(_ flag: ModifierFlags) -> Bool {
-        return self.modifierFlags.intersection(.deviceIndependentFlagsMask) == .option
-    }
+//    func exclusivelyContains(_ flag: ModifierFlags) -> Bool {
+//        return self.modifierFlags.intersection(.deviceIndependentFlagsMask) == .option
+//    }
 }
 
 struct CollectRules {
@@ -55,6 +55,7 @@ struct CollectAreaView: View {
             }
 
             ElementRectView(label: label, origin: origin, size: size, showCollect: showCollect)
+                .id("Top-Level_Element-Rect")
 
             if let element {
                 HierarchyRectView(element: element, level: 0)
@@ -82,7 +83,7 @@ struct CollectAreaView: View {
 
     private func handleOptionKey(_ event: NSEvent) {
         withAnimation(.bouncy(duration: 0.2)) {
-            if event.exclusivelyContains(.option) {
+            if exclusivelyContains(event, flag: .option) {
                 if showCollect != true {
                     showCollect = true
                 }
@@ -94,6 +95,10 @@ struct CollectAreaView: View {
 //                showDebugUI = false
             }
         }
+    }
+
+    func exclusivelyContains(_ event: NSEvent, flag: NSEvent.ModifierFlags) -> Bool {
+        return event.modifierFlags.intersection(.deviceIndependentFlagsMask) == .option
     }
 
     private func handleMousePosition(_ event: NSEvent) throws {
