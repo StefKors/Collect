@@ -8,6 +8,7 @@
 import SwiftUI
 import SwiftData
 
+//https://x.com/samhenrigold/status/1844157571072204838
 @main
 struct CollectApp: App {
 

@@ -46,6 +46,22 @@ struct CollectHistoryContentView: View {
                     }
                     Text("to start collecting")
                 }
+                HStack {
+                    Text("Primary")
+                        .padding()
+                        .padding(.horizontal)
+                        .background(.orange, in: RoundedRectangle(cornerRadius: 8))
+
+                    Text("Secondary")
+                        .padding()
+                        .padding(.horizontal)
+                        .background(.orange.secondary, in: RoundedRectangle(cornerRadius: 8))
+
+                    Text("Tertiary")
+                        .padding()
+                        .padding(.horizontal)
+                        .background(.orange.tertiary, in: RoundedRectangle(cornerRadius: 8))
+                }
             }
         }
         .toolbar(content: {
