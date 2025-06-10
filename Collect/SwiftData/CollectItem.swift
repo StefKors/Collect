@@ -10,9 +10,9 @@ import SwiftData
 
 @Model
 final class CollectItem {
-    @Attribute(.unique) let timestamp: Date
-    let text: String
-    let attributes: [AXAttribute: String] = [:]
+    @Attribute(.unique) var timestamp: Date
+    var text: String
+    var attributes: [AXAttribute: String] = [:]
 
     init(text: String, attributes: [AXAttribute: String] = [:], timestamp: Date = .now) {
         self.text = text
