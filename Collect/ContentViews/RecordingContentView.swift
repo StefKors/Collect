@@ -8,6 +8,7 @@
 import SwiftUI
 import SwiftData
 import ScreenCaptureKit
+import CollectUI
 
 struct RecordingContentView: View {
 

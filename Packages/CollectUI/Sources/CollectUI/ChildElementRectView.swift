@@ -8,6 +8,8 @@
 import SwiftUI
 import os.signpost
 import ScreenCaptureKit
+import AXSwift
+import SkyLight
 
 /// NSAccessibilityAnnotationPosition
 /// setAccessibilityFrameInParentSpace
@@ -49,7 +51,7 @@ struct ChildElementRectView: View {
                 self.calcPositions()
 
                 if WindowTracker.shared.isAvailable,
-                   let windowID = WindowTracker.shared.windowID(of: element) {
+                   let windowID = element.containingWindowID {
                     self.trackWindow(windowID)
                     // Snap once after tracking starts, covering a window move
                     // between the AX frame read and the bounds read above.

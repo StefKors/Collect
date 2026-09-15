@@ -8,7 +8,8 @@
 import Foundation
 
 extension CGRect {
-    init(p1: CGPoint, p2: CGPoint) {
+    /// Rect spanning the two points, regardless of drag direction.
+    public init(p1: CGPoint, p2: CGPoint) {
         let left = min(p1.x, p2.x)
         let right = max(p1.x, p2.x)
         let top = min(p1.y, p2.y)

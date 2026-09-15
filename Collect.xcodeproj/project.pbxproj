@@ -6,6 +6,12 @@
 	objectVersion = 70;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		8ACC00000000000000000001 /* AXSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 8ABB00000000000000000001 /* AXSwift */; };
+		8ACC00000000000000000002 /* CollectUI in Frameworks */ = {isa = PBXBuildFile; productRef = 8ABB00000000000000000002 /* CollectUI */; };
+		8ACC00000000000000000003 /* SkyLight in Frameworks */ = {isa = PBXBuildFile; productRef = 8ABB00000000000000000003 /* SkyLight */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
 		8A6B30E32A61D765005995A6 /* Collect.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Collect.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -29,6 +35,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8ACC00000000000000000001 /* AXSwift in Frameworks */,
+				8ACC00000000000000000002 /* CollectUI in Frameworks */,
+				8ACC00000000000000000003 /* SkyLight in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -71,6 +80,9 @@
 			);
 			name = Collect;
 			packageProductDependencies = (
+				8ABB00000000000000000001 /* AXSwift */,
+				8ABB00000000000000000002 /* CollectUI */,
+				8ABB00000000000000000003 /* SkyLight */,
 			);
 			productName = Collect;
 			productReference = 8A6B30E32A61D765005995A6 /* Collect.app */;
@@ -102,6 +114,9 @@
 			);
 			mainGroup = 8A6B30DA2A61D765005995A6;
 			packageReferences = (
+				8AAA00000000000000000001 /* XCLocalSwiftPackageReference "Packages/AXSwift" */,
+				8AAA00000000000000000002 /* XCLocalSwiftPackageReference "Packages/CollectUI" */,
+				8AAA00000000000000000003 /* XCLocalSwiftPackageReference "Packages/SkyLight" */,
 			);
 			productRefGroup = 8A6B30E42A61D765005995A6 /* Products */;
 			projectDirPath = "";
@@ -338,6 +353,18 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCLocalSwiftPackageReference section */
+		8AAA00000000000000000001 /* XCLocalSwiftPackageReference "Packages/AXSwift" */ = {isa = XCLocalSwiftPackageReference; relativePath = Packages/AXSwift; };
+		8AAA00000000000000000002 /* XCLocalSwiftPackageReference "Packages/CollectUI" */ = {isa = XCLocalSwiftPackageReference; relativePath = Packages/CollectUI; };
+		8AAA00000000000000000003 /* XCLocalSwiftPackageReference "Packages/SkyLight" */ = {isa = XCLocalSwiftPackageReference; relativePath = Packages/SkyLight; };
+/* End XCLocalSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		8ABB00000000000000000001 /* AXSwift */ = {isa = XCSwiftPackageProductDependency; package = 8AAA00000000000000000001 /* XCLocalSwiftPackageReference "Packages/AXSwift" */; productName = AXSwift; };
+		8ABB00000000000000000002 /* CollectUI */ = {isa = XCSwiftPackageProductDependency; package = 8AAA00000000000000000002 /* XCLocalSwiftPackageReference "Packages/CollectUI" */; productName = CollectUI; };
+		8ABB00000000000000000003 /* SkyLight */ = {isa = XCSwiftPackageProductDependency; package = 8AAA00000000000000000003 /* XCLocalSwiftPackageReference "Packages/SkyLight" */; productName = SkyLight; };
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 8A6B30DB2A61D765005995A6 /* Project object */;
 }

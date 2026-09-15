@@ -16,7 +16,10 @@ open class SystemWideElement: UIElement {
         return try super.elementAtPosition(x, y)
     }
 
-    func getAtPoint(_ point: NSPoint) -> UIElement? {
+    /// Returns the element at the given point in top-down screen
+    /// coordinates, or nil if there is none. Convenience wrapper over
+    /// `elementAtPosition` that takes an `NSPoint` and swallows errors.
+    public func getAtPoint(_ point: NSPoint) -> UIElement? {
         return try? self.elementAtPosition(Float(point.x), Float(point.y))
     }
 }

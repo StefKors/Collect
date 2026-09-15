@@ -67,7 +67,7 @@ extension View {
      - Parameter isPresented: A boolean binding that keeps track of the panel's presentation state
      - Parameter content: The displayed content
      **/
-    func floatingPanel<Content: View>(isPresented: Binding<Bool>,
+    public func floatingPanel<Content: View>(isPresented: Binding<Bool>,
                                       ignoresMouseEvents: Binding<Bool>,
                                       // collectRect: Binding<CGRect>,
                                       @ViewBuilder content: @escaping () -> Content) -> some View {

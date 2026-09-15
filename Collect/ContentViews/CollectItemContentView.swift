@@ -7,6 +7,7 @@
 
 import SwiftUI
 import SwiftData
+import CollectUI
 
 struct CollectHistoryContentView: View {
     @Environment(\.modelContext) private var modelContext
@@ -115,9 +116,9 @@ struct CollectItemContentView: View {
             })
     }
 
-    private func handleCollect(_ item: CollectItem) {
+    private func handleCollect(_ collected: CollectedElement) {
         withAnimation {
-            modelContext.insert(item)
+            modelContext.insert(CollectItem(text: collected.text, attributes: collected.attributes))
         }
     }
 }

@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import CollectUI
 
 struct DragGestureAreaRecorderView: View {
     @Binding var area: CGRect

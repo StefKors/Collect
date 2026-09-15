@@ -1,2 +1,4 @@
 
 Collect.xcodeproj/xcuserdata
+.build/
+.swiftpm/

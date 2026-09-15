@@ -8,6 +8,7 @@
 import SwiftUI
 import Cocoa
 import os
+import AXSwift
 
 
 extension NSEvent {
@@ -20,7 +21,34 @@ struct CollectRules {
     static let minRectSize: CGSize = CGSize(width: 20, height: 5)
 }
 
-struct CollectAreaView: View {
+/// An accessibility element the user clicked while the collect overlay was
+/// active, together with the text extracted from it.
+public struct CollectedElement {
+    /// The element that was clicked.
+    public let element: UIElement
+    /// Combined `AXValue` strings of the element and its descendants,
+    /// space-joined and trimmed.
+    public let text: String
+    /// Raw attribute dump of the element (`UIElement.inspectDict`).
+    public let attributes: [AXAttribute: String]
+
+    public init(element: UIElement, text: String, attributes: [AXAttribute: String]) {
+        self.element = element
+        self.text = text
+        self.attributes = attributes
+    }
+}
+
+/// Full-screen collect overlay.
+///
+/// Hold option to enter "collect mode": the element under the pointer is
+/// outlined and clicking it fires `onCollect` with the element, its
+/// extracted text and its attribute dump. Child rects of the clicked
+/// element are tracked live via `SkyLight.WindowTracker` so they follow
+/// foreign windows while they move.
+///
+/// Presented through `floatingPanel` — see `FloatingPanel.swift`.
+public struct CollectAreaView: View {
     @AppStorage("showDebugUI") private var showDebugUI: Bool = false
     
     /// Target element
@@ -42,9 +70,16 @@ struct CollectAreaView: View {
         category: String(describing: Self.self)
     )
 
-    var onCollect: (_ item: CollectItem) -> Void
+    /// Called when the user clicks an element while in collect mode.
+    /// Not called for clicks that produce no text, or for elements identical
+    /// to the previously collected one (deduped via `lastStore`).
+    public let onCollect: (_ item: CollectedElement) -> Void
 
-    var body: some View {
+    public init(onCollect: @escaping (_ item: CollectedElement) -> Void) {
+        self.onCollect = onCollect
+    }
+
+    public var body: some View {
         ZStack() {
             if showDebugUI {
                 DebugFullWindowView()
@@ -130,29 +165,25 @@ struct CollectAreaView: View {
         let clickLocation = NSEvent.mouseLocation.flipped()
 
         if let clickElement = systemWideElement.getAtPoint(clickLocation) {
-            print("update clickElement")
             self.element = clickElement
 
+            let text = getSumString(element: clickElement)
+                .joined(separator: " ")
+                .trimmingCharacters(in: .whitespaces)
 
-//            let text = getSumString(element: clickElement)
-//                .joined(separator: " ")
-//                .trimmingCharacters(in: .whitespaces)
-//
-//             if text.isEmpty {
-//                print("text is empty, skipping collect")
-//                return
-//            }
-//
-//            // Dedupe naively
-//            if text == lastStore {
-//                return
-//            }
-//
-//            lastStore = text
-////            let attrs = clickElement.inspectDict
-////            print("onCollect \(attrs)")
-//            let newItem = CollectItem(text: text, attributes: clickElement.inspectDict)
-//            onCollect(newItem)
+            if text.isEmpty {
+                print("text is empty, skipping collect")
+                return
+            }
+
+            // Dedupe naively — the universal monitor can deliver a click
+            // through both its local and global monitors.
+            if text == lastStore {
+                return
+            }
+
+            lastStore = text
+            onCollect(CollectedElement(element: clickElement, text: text, attributes: clickElement.inspectDict))
         }
     }
 

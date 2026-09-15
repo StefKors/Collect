@@ -7,6 +7,7 @@
 
 import Foundation
 import SwiftData
+import AXSwift
 
 @Model
 final class CollectItem {

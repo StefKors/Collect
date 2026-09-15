@@ -6,7 +6,11 @@
 //
 
 import SwiftUI
+import AXSwift
 
+/// Recursively renders a collect rect for `element` and all of its
+/// `AXChildren`. Internal to the package — the public entry point is
+/// `CollectAreaView`.
 struct HierarchyRectView: View {
     let element: UIElement
     var level: Int

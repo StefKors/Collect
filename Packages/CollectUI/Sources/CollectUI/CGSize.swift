@@ -8,7 +8,7 @@
 import Foundation
 import CoreGraphics
 
-extension CGSize: Comparable {
+extension CGSize: @retroactive Comparable {
     public static func < (lhs: CGSize, rhs: CGSize) -> Bool {
         if(lhs.width >= rhs.width) { return false }
         if(lhs.height >= rhs.height) { return false }
