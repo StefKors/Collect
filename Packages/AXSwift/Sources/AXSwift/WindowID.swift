@@ -1,5 +1,6 @@
 import Cocoa
 import Foundation
+import os
 
 /// `_AXUIElementGetWindow` — private HIServices function that maps an
 /// AXUIElement to the CGWindowID of its backing WindowServer window. This is
@@ -12,12 +13,18 @@ import Foundation
 private typealias AXUIElementGetWindow =
     @convention(c) (AXUIElement, UnsafeMutablePointer<CGWindowID>) -> AXError
 
+private let logger = Logger(subsystem: Bundle.main.bundleIdentifier ?? "AXSwift",
+                            category: "WindowID")
+
 private let axUIElementGetWindow: AXUIElementGetWindow? = {
     let handle = dlopen(
         "/System/Library/Frameworks/ApplicationServices.framework/Frameworks/HIServices.framework/HIServices",
         RTLD_LAZY
     )
-    guard let handle, let pointer = dlsym(handle, "_AXUIElementGetWindow") else { return nil }
+    guard let handle, let pointer = dlsym(handle, "_AXUIElementGetWindow") else {
+        logger.warning("_AXUIElementGetWindow not found — containingWindowID will always be nil")
+        return nil
+    }
     return unsafeBitCast(pointer, to: AXUIElementGetWindow.self)
 }()
 
@@ -42,14 +49,18 @@ extension UIElement {
            let windowID = rawWindowID(of: window.element) { return windowID }
         if let topLevel: UIElement = try? attribute(.topLevelUIElement),
            let windowID = rawWindowID(of: topLevel.element) { return windowID }
+        logger.debug("containingWindowID: no window id resolved for \(String(describing: self.element))")
         return nil
     }
 
     private func rawWindowID(of element: AXUIElement) -> CGWindowID? {
         var windowID = CGWindowID(0)
-        guard let axUIElementGetWindow,
-              axUIElementGetWindow(element, &windowID) == .success,
-              windowID != 0 else { return nil }
+        guard let axUIElementGetWindow else { return nil }
+        let error = axUIElementGetWindow(element, &windowID)
+        guard error == .success, windowID != 0 else {
+            logger.debug("_AXUIElementGetWindow failed: \(error), wid=\(windowID)")
+            return nil
+        }
         return windowID
     }
 }

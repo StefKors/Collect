@@ -50,15 +50,21 @@ struct ChildElementRectView: View {
 
                 self.calcPositions()
 
-                if WindowTracker.shared.isAvailable,
-                   let windowID = element.containingWindowID {
-                    self.trackWindow(windowID)
-                    // Snap once after tracking starts, covering a window move
-                    // between the AX frame read and the bounds read above.
-                    self.scheduleSettleRead()
+                if WindowTracker.shared.isAvailable {
+                    if let windowID = element.containingWindowID {
+                        os_log(.debug, log: log, "tracking wid=%{public}u via SkyLight", windowID)
+                        self.trackWindow(windowID)
+                        // Snap once after tracking starts, covering a window move
+                        // between the AX frame read and the bounds read above.
+                        self.scheduleSettleRead()
+                    } else {
+                        os_log(.debug, log: log, "no containing window — AX observer fallback")
+                        self.renderElement()
+                    }
                 } else {
                     // Elements without a resolvable window keep the old
                     // AXObserver path.
+                    os_log(.debug, log: log, "WindowTracker unavailable — AX observer fallback")
                     self.renderElement()
                 }
 
@@ -162,21 +168,32 @@ struct ChildElementRectView: View {
             }
         }
 
-        print("update element")
-        if let pid = try? element.pid(), let app = Application(forProcessID: pid) {
-//            print("pid")
+        guard let pid = try? element.pid() else {
+            os_log(.error, log: log, "renderElement: could not get pid — no tracking for this element")
+            return
+        }
+        guard let app = Application(forProcessID: pid) else {
+            os_log(.error, log: log, "renderElement: no Application for pid %d", pid)
+            return
+        }
 
-            self.observer = app.createObserver({ observer, windowElement, notification, info in
-                calcPositionsFast(notification)
-            })
+        self.observer = app.createObserver({ observer, windowElement, notification, info in
+            calcPositionsFast(notification)
+        })
 
-//            AXNotification.allCases.forEach { notification in
-//                try? self.observer?.addNotification(notification, forElement: app)
-//            }
+        guard let observer else {
+            os_log(.error, log: log, "renderElement: AXObserverCreate failed for pid %d", pid)
+            return
+        }
 
-            [AXNotification.windowMoved, AXNotification.windowResized].forEach { notification in
-                try? self.observer?.addNotification(notification, forElement: app)
+        for notification in [AXNotification.windowMoved, AXNotification.windowResized] {
+            do {
+                try observer.addNotification(notification, forElement: app)
+            } catch {
+                os_log(.error, log: log, "renderElement: addNotification %{public}s failed: %{public}s",
+                       notification.rawValue, error.localizedDescription)
             }
+        }
 
 //            Task {
 //                let things = try? await SCShareableContent.excludingDesktopWindows(false, onScreenWindowsOnly: true)
@@ -188,6 +205,5 @@ struct ChildElementRectView: View {
 //                SCShareableContentInfo
 //                print(dump(things?.applications))
 //            }
-        }
     }
 }

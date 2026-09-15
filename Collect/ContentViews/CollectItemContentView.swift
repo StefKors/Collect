@@ -11,6 +11,7 @@ import CollectUI
 
 struct CollectHistoryContentView: View {
     @Environment(\.modelContext) private var modelContext
+    @AppStorage(CollectAreaView.keepsRectsStorageKey) private var keepsRects = false
 
     @Query private var items: [CollectItem]
 
@@ -47,6 +48,8 @@ struct CollectHistoryContentView: View {
                     }
                     Text("to start collecting")
                 }
+                Toggle("Keep rectangles pinned (esc clears)", isOn: $keepsRects)
+                    .toggleStyle(.checkbox)
                 HStack {
                     Text("Primary")
                         .padding()

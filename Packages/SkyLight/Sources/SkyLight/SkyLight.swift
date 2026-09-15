@@ -13,6 +13,7 @@
 
 import CoreGraphics
 import Foundation
+import os
 
 /// Namespace for process-wide WindowServer state and free functions.
 ///
@@ -69,9 +70,20 @@ enum SLS {
     static let handle: UnsafeMutableRawPointer? =
         dlopen("/System/Library/PrivateFrameworks/SkyLight.framework/SkyLight", RTLD_LAZY)
 
+    private static let logger = Logger(subsystem: Log.subsystem, category: "SLS")
+
     /// Resolves a symbol from the SkyLight image to a C function pointer.
+    /// A missing symbol is logged once (static lets resolve lazily on first
+    /// access) and the wrapper degrades to a no-op.
     static func symbol<T>(_ name: String, as type: T.Type = T.self) -> T? {
-        guard let handle, let pointer = dlsym(handle, name) else { return nil }
+        guard let handle else {
+            logger.error("dlopen of SkyLight.framework failed — all APIs unavailable")
+            return nil
+        }
+        guard let pointer = dlsym(handle, name) else {
+            logger.warning("SkyLight symbol not found: \(name)")
+            return nil
+        }
         return unsafeBitCast(pointer, to: T.self)
     }
 

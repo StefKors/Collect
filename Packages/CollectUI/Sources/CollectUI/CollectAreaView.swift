@@ -21,6 +21,14 @@ struct CollectRules {
     static let minRectSize: CGSize = CGSize(width: 20, height: 5)
 }
 
+/// A pinned element with a stable identity for ForEach. `UIElement` itself
+/// is only `Equatable` (CFEqual); the UUID keeps view identity stable even
+/// when two elements render identical attribute dumps.
+private struct PinnedElement: Identifiable {
+    let id = UUID()
+    let element: UIElement
+}
+
 /// An accessibility element the user clicked while the collect overlay was
 /// active, together with the text extracted from it.
 public struct CollectedElement {
@@ -47,10 +55,20 @@ public struct CollectedElement {
 /// element are tracked live via `SkyLight.WindowTracker` so they follow
 /// foreign windows while they move.
 ///
+/// When the `keepsRectsStorageKey` default is on, every clicked element's
+/// rectangles are *pinned*: they stay on screen — through further clicks and
+/// window drags — until Escape clears them. With it off, clicking somewhere
+/// else replaces the previous selection.
+///
 /// Presented through `floatingPanel` — see `FloatingPanel.swift`.
 public struct CollectAreaView: View {
+    /// `UserDefaults`/`AppStorage` key for the pin mode. Bind a toggle to
+    /// this key to expose the option in app UI.
+    public static let keepsRectsStorageKey = "keepCollectRects"
+
     @AppStorage("showDebugUI") private var showDebugUI: Bool = false
-    
+    @AppStorage(CollectAreaView.keepsRectsStorageKey) private var keepsRects: Bool = false
+
     /// Target element
     @State private var label: String? = nil
     @State private var mouseLocation: NSPoint = .zero
@@ -61,6 +79,9 @@ public struct CollectAreaView: View {
 
     /// Collected / Selected element
     @State private var element: UIElement? = nil
+
+    /// Elements whose rectangles stay on screen while `keepsRects` is on.
+    @State private var pinnedElements: [PinnedElement] = []
 
     /// Deduping store
     @State private var lastStore: String? = nil
@@ -92,7 +113,11 @@ public struct CollectAreaView: View {
             ElementRectView(label: label, origin: origin, size: size, showCollect: showCollect)
                 .id("Top-Level_Element-Rect")
 
-            if let element {
+            ForEach(pinnedElements) { pinned in
+                HierarchyRectView(element: pinned.element, level: 0)
+            }
+
+            if let element, !pinnedElements.contains(where: { $0.element == element }) {
                 HierarchyRectView(element: element, level: 0)
 //                ChildElementRectView(element: element)
 
@@ -106,6 +131,12 @@ public struct CollectAreaView: View {
         // TODO: add more events like scroll and touch and etc...
         .universalEventMonitor(for: [.leftMouseDown, .mouseMoved, .flagsChanged, .keyUp, .keyDown]) { event in
             handleOptionKey(event)
+            if event.type == .keyDown, event.keyCode == 53 {
+                // Escape clears pinned rectangles and the current selection.
+                pinnedElements = []
+                element = nil
+                return
+            }
             if showCollect {
                 try? handleMousePosition(event)
                 if event.type == .leftMouseDown {
@@ -166,6 +197,10 @@ public struct CollectAreaView: View {
 
         if let clickElement = systemWideElement.getAtPoint(clickLocation) {
             self.element = clickElement
+
+            if keepsRects, !pinnedElements.contains(where: { $0.element == clickElement }) {
+                pinnedElements.append(PinnedElement(element: clickElement))
+            }
 
             let text = getSumString(element: clickElement)
                 .joined(separator: " ")

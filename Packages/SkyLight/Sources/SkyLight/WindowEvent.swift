@@ -14,6 +14,7 @@
 
 import CoreGraphics
 import Foundation
+import os
 
 /// A WindowServer event identifier delivered through `SLSRegisterNotifyProc`.
 ///
@@ -83,11 +84,16 @@ public struct WindowEventInfo: Hashable, Sendable {
 
 /// Central subscription point for WindowServer events.
 ///
-/// Handlers are always invoked on the main queue. SkyLight itself may call
-/// the C callback from a mach message thread; hopping to main keeps
-/// subscribers (SwiftUI state in particular) safe by construction.
+/// Handlers are keyed per event and always invoked on the main queue.
+/// SkyLight itself may call the C callback from a mach message thread;
+/// hopping to main keeps subscribers (SwiftUI state in particular) safe by
+/// construction.
 ///
 /// `subscribe`/`cancel` must be called from the main thread.
+///
+/// Registration failures and payload problems are logged to the
+/// `WindowEventCenter` OSLog category (subsystem: host bundle id); event
+/// delivery is logged at `debug` level.
 public final class WindowEventCenter {
     public static let shared = WindowEventCenter()
 
@@ -96,10 +102,12 @@ public final class WindowEventCenter {
     /// Cancels a subscription. Also cancels on deinit.
     public final class Subscription {
         fileprivate let id = UUID()
+        fileprivate let event: WindowEvent
         private weak var center: WindowEventCenter?
 
-        fileprivate init(center: WindowEventCenter) {
+        fileprivate init(center: WindowEventCenter, event: WindowEvent) {
             self.center = center
+            self.event = event
         }
 
         public func cancel() {
@@ -110,12 +118,18 @@ public final class WindowEventCenter {
         deinit { cancel() }
     }
 
-    private var handlers: [UUID: Handler] = [:]
+    /// Handlers keyed by event rawValue — a subscription only receives the
+    /// event it subscribed to.
+    private var handlers: [UInt32: [UUID: Handler]] = [:]
     private var registeredEvents = Set<UInt32>()
     private let registerNotifyProc: SLS.RegisterNotifyProc?
+    private let logger = Logger(subsystem: Log.subsystem, category: "WindowEventCenter")
 
     private init() {
         registerNotifyProc = SLS.registerNotifyProc
+        if registerNotifyProc == nil {
+            logger.error("SLSRegisterNotifyProc not available — no WindowServer events will be delivered")
+        }
     }
 
     /// Whether `SLSRegisterNotifyProc` was resolved successfully.
@@ -128,12 +142,18 @@ public final class WindowEventCenter {
     ///   ``WindowEvent/windowResize``) are only delivered for windows passed
     ///   to ``WindowTracker`` or `SLSRequestNotificationsForWindows`.
     public func subscribe(to event: WindowEvent, handler: @escaping Handler) -> Subscription {
-        let subscription = Subscription(center: self)
-        handlers[subscription.id] = handler
+        let subscription = Subscription(center: self, event: event)
+        handlers[event.rawValue, default: [:]][subscription.id] = handler
+
         if !registeredEvents.contains(event.rawValue), let registerNotifyProc {
             let context = Unmanaged.passUnretained(self).toOpaque()
-            _ = registerNotifyProc(Self.notifyCallback, event.rawValue, context)
-            registeredEvents.insert(event.rawValue)
+            let error = registerNotifyProc(Self.notifyCallback, event.rawValue, context)
+            if error == 0 {
+                registeredEvents.insert(event.rawValue)
+                logger.debug("registered for event \(event.rawValue)")
+            } else {
+                logger.error("SLSRegisterNotifyProc failed for event \(event.rawValue): CGError \(error)")
+            }
         }
         return subscription
     }
@@ -143,7 +163,10 @@ public final class WindowEventCenter {
             DispatchQueue.main.async { self.unsubscribe(subscription) }
             return
         }
-        handlers[subscription.id] = nil
+        handlers[subscription.event.rawValue]?[subscription.id] = nil
+        if handlers[subscription.event.rawValue]?.isEmpty != false {
+            handlers[subscription.event.rawValue] = nil
+        }
     }
 
     private static let notifyCallback: SLS.NotifyProc = { event, data, length, context in
@@ -154,26 +177,37 @@ public final class WindowEventCenter {
         // `{ uint64_t sid; uint32_t wid; }` struct (window-sweaters'
         // window_spawn_handler), everything else we care about is a bare
         // window id. Events with no window payload decode to windowID 0.
+        // WindowServer payloads are not guaranteed aligned — plain
+        // `load(as:)` traps on misaligned access.
         var windowID: CGWindowID = 0
         var spaceID: UInt64? = nil
         if let data {
             let isSpawnEvent = event == WindowEvent.windowCreate.rawValue
                 || event == WindowEvent.windowDestroy.rawValue
             if isSpawnEvent && length >= 12 {
-                spaceID = data.load(as: UInt64.self)
-                windowID = data.load(fromByteOffset: 8, as: UInt32.self)
+                spaceID = data.loadUnaligned(as: UInt64.self)
+                windowID = data.loadUnaligned(fromByteOffset: 8, as: UInt32.self)
             } else if length >= 4 {
-                windowID = data.load(as: UInt32.self)
+                windowID = data.loadUnaligned(as: UInt32.self)
             }
         }
 
         let info = WindowEventInfo(event: WindowEvent(rawValue: event),
                                    windowID: windowID,
                                    spaceID: spaceID)
+        // `handlers` is owned by the main thread — look up and deliver there.
         DispatchQueue.main.async {
-            for handler in center.handlers.values {
+            guard let subscribers = center.handlers[event], !subscribers.isEmpty else { return }
+            center.logger.debug("event \(event) wid=\(windowID) subscribers=\(subscribers.count)")
+            for handler in subscribers.values {
                 handler(info)
             }
         }
     }
+}
+
+/// Shared OSLog subsystem for the SkyLight package. Uses the host app's
+/// bundle identifier so `log show --process Collect` picks it up.
+enum Log {
+    static let subsystem = Bundle.main.bundleIdentifier ?? "SkyLight"
 }

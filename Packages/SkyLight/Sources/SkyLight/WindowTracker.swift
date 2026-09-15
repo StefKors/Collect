@@ -13,6 +13,7 @@
 
 import CoreGraphics
 import Foundation
+import os
 
 /// Tracks move/resize/destroy events for a set of windows.
 ///
@@ -62,6 +63,7 @@ public final class WindowTracker {
 
     private var handlers: [CGWindowID: [UUID: Handler]] = [:]
     private var subscriptions: [WindowEventCenter.Subscription] = []
+    private let logger = Logger(subsystem: Log.subsystem, category: "WindowTracker")
 
     /// Whether SkyLight notifications could be registered. When false,
     /// `track` still returns a subscription but no events arrive — callers
@@ -69,9 +71,18 @@ public final class WindowTracker {
     public private(set) var isAvailable = false
 
     private init() {
-        guard WindowEventCenter.shared.isAvailable,
-              SLS.requestNotificationsForWindows != nil,
-              SLS.getWindowBounds != nil else { return }
+        guard WindowEventCenter.shared.isAvailable else {
+            logger.error("unavailable: SLSRegisterNotifyProc could not be resolved")
+            return
+        }
+        guard SLS.requestNotificationsForWindows != nil else {
+            logger.error("unavailable: SLSRequestNotificationsForWindows could not be resolved")
+            return
+        }
+        guard SLS.getWindowBounds != nil else {
+            logger.error("unavailable: SLSGetWindowBounds could not be resolved")
+            return
+        }
 
         let center = WindowEventCenter.shared
         subscriptions = [
@@ -94,6 +105,7 @@ public final class WindowTracker {
     public func track(_ windowID: CGWindowID, handler: @escaping Handler) -> Subscription {
         let subscription = Subscription(windowID: windowID, tracker: self)
         handlers[windowID, default: [:]][subscription.id] = handler
+        logger.debug("track wid=\(windowID) tracked=\(self.handlers.count)")
         updateNotifications()
         return subscription
     }
@@ -105,15 +117,23 @@ public final class WindowTracker {
     }
 
     private func handleEvent(_ event: Event, windowID: CGWindowID) {
-        guard let subscribers = handlers[windowID], !subscribers.isEmpty else { return }
+        guard let subscribers = handlers[windowID], !subscribers.isEmpty else {
+            logger.debug("event \(String(describing: event)) for untracked wid=\(windowID), ignoring")
+            return
+        }
 
         switch event {
         case .moved, .resized:
-            guard let bounds = bounds(of: windowID) else { return }
+            guard let bounds = bounds(of: windowID) else {
+                logger.error("SLSGetWindowBounds failed for wid=\(windowID)")
+                return
+            }
+            logger.debug("\(String(describing: event)) wid=\(windowID) bounds=\(NSStringFromRect(bounds)) subscribers=\(subscribers.count)")
             for handler in subscribers.values {
                 handler(bounds, event)
             }
         case .destroyed:
+            logger.debug("destroyed wid=\(windowID) subscribers=\(subscribers.count)")
             for handler in subscribers.values {
                 handler(.zero, .destroyed)
             }
@@ -137,10 +157,13 @@ public final class WindowTracker {
     private func updateNotifications() {
         guard let requestNotifications = SLS.requestNotificationsForWindows else { return }
         var windowIDs = Array(handlers.keys)
-        windowIDs.withUnsafeMutableBufferPointer { buffer in
-            _ = requestNotifications(SkyLight.mainConnectionID,
-                                     buffer.baseAddress,
-                                     Int32(buffer.count))
+        let error = windowIDs.withUnsafeMutableBufferPointer { buffer in
+            requestNotifications(SkyLight.mainConnectionID,
+                                 buffer.baseAddress,
+                                 Int32(buffer.count))
+        }
+        if error != 0 {
+            logger.error("SLSRequestNotificationsForWindows failed: CGError \(error) wids=\(windowIDs)")
         }
     }
 }
