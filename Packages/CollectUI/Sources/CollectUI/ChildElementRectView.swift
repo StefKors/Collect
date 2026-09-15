@@ -109,7 +109,7 @@ struct ChildElementRectView: View {
             case .resized:
                 // Children can reflow during a resize; re-read the real frame.
                 windowOrigin = bounds.origin
-                calcPositions()
+                calcPositions(animated: false)
                 scheduleSettleRead()
             case .destroyed:
                 size = .zero
@@ -127,7 +127,7 @@ struct ChildElementRectView: View {
         let token = settleToken
         DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(32)) {
             guard token == settleToken else { return }
-            calcPositions()
+            calcPositions(animated: false)
             if let windowID = subscription?.windowID {
                 windowOrigin = WindowTracker.shared.bounds(of: windowID)?.origin
             }
@@ -143,11 +143,14 @@ struct ChildElementRectView: View {
 //        os_signpost(.begin, log: log, name: "Calculate Positions Fast", signpostID: signpost, "%{public}s", notification.rawValue)
     }
 
-    func calcPositions() {
+    /// - Parameter animated: window-tracking updates pass `false` — a rect
+    ///   stuck to a moving window should land on the new frame immediately,
+    ///   not chase it with a spring.
+    func calcPositions(animated: Bool = true) {
         self.label = try? element.attribute(.roleDescription) ?? nil
         if let frame: CGRect = try? element.attribute(.frame) {
             // skip animation on first show
-            if show == false {
+            if show == false || animated == false {
                 self.origin = frame.origin
                 self.size = frame.size
             } else {
