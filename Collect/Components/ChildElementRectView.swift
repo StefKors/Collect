@@ -23,10 +23,16 @@ struct ChildElementRectView: View {
     var level: Int
 
     @State private var observer: Observer? = nil
+    @State private var subscription: WindowTracker.Subscription? = nil
 
     @State private var origin: NSPoint = .zero
     @State private var size: CGSize = .zero
     @State private var label: String?
+
+    /// Last WindowServer origin of the window containing `element`.
+    @State private var windowOrigin: CGPoint? = nil
+    /// Generation token so only the newest settle read runs.
+    @State private var settleToken: UInt64 = 0
 
     private var show: Bool {
         (size != .zero) && (origin != .zero)
@@ -36,8 +42,23 @@ struct ChildElementRectView: View {
         ElementRectView(label: label, level: level, origin: origin, size: size, showCollect: show)
 //            .id(label)
             .task(id: element) {
+                self.subscription?.cancel()
+                self.subscription = nil
+                self.observer = nil
+
                 self.calcPositions()
-                self.renderElement()
+
+                if WindowTracker.shared.isAvailable,
+                   let windowID = WindowTracker.shared.windowID(of: element) {
+                    self.trackWindow(windowID)
+                    // Snap once after tracking starts, covering a window move
+                    // between the AX frame read and the bounds read above.
+                    self.scheduleSettleRead()
+                } else {
+                    // Elements without a resolvable window keep the old
+                    // AXObserver path.
+                    self.renderElement()
+                }
 
 //                    let apps = NSWorkspace.shared.runningApplications
 //                    .filter { $0 != NSRunningApplication.current }
@@ -52,6 +73,57 @@ struct ChildElementRectView: View {
 //                }
 //                print(dump(el))
             }
+            .onDisappear {
+                self.subscription?.cancel()
+                self.subscription = nil
+                self.observer = nil
+            }
+    }
+
+    /// Tracks the containing window at the WindowServer level, the way
+    /// window-sweaters tracks its borders: SkyLight pushes move/resize events
+    /// for the window and the rect follows without per-event AX IPC.
+    func trackWindow(_ windowID: CGWindowID) {
+        windowOrigin = WindowTracker.shared.bounds(of: windowID)?.origin
+        subscription = WindowTracker.shared.track(windowID) { bounds, event in
+            switch event {
+            case .moved:
+                // A move shifts every element in the window by the same delta,
+                // so the rect follows with WindowServer data alone.
+                if let previous = windowOrigin {
+                    origin = NSPoint(
+                        x: origin.x + bounds.origin.x - previous.x,
+                        y: origin.y + bounds.origin.y - previous.y
+                    )
+                }
+                windowOrigin = bounds.origin
+                scheduleSettleRead()
+            case .resized:
+                // Children can reflow during a resize; re-read the real frame.
+                windowOrigin = bounds.origin
+                calcPositions()
+                scheduleSettleRead()
+            case .destroyed:
+                size = .zero
+                subscription?.cancel()
+                subscription = nil
+            }
+        }
+    }
+
+    /// Notifications can precede the final WindowServer/AX geometry.
+    /// window-sweaters reads the frame once more 32ms after the last event;
+    /// do the same so the rect settles exactly on the element.
+    func scheduleSettleRead() {
+        settleToken &+= 1
+        let token = settleToken
+        DispatchQueue.main.asyncAfter(deadline: .now() + .milliseconds(32)) {
+            guard token == settleToken else { return }
+            calcPositions()
+            if let windowID = subscription?.windowID {
+                windowOrigin = WindowTracker.shared.bounds(of: windowID)?.origin
+            }
+        }
     }
 
     func calcPositionsFast(_ notification: AXNotification) {
@@ -100,7 +172,7 @@ struct ChildElementRectView: View {
 //                try? self.observer?.addNotification(notification, forElement: app)
 //            }
 
-            [AXNotification.windowMoved].forEach { notification in
+            [AXNotification.windowMoved, AXNotification.windowResized].forEach { notification in
                 try? self.observer?.addNotification(notification, forElement: app)
             }
 

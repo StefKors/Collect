@@ -48,6 +48,7 @@
 		8A87F6FA2ABC8A0F004305F6 /* RecordingToolBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8A87F6F92ABC8A0F004305F6 /* RecordingToolBarView.swift */; };
 		8AD7AB9C2A8B898A009D5962 /* NSPoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AD7AB9B2A8B898A009D5962 /* NSPoint.swift */; };
 		8AFD4D372BA071B1001F98F5 /* PerspectiveView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AFD4D362BA071B1001F98F5 /* PerspectiveView.swift */; };
+		8AC11E002E9B000000000001 /* WindowTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AC11E002E9B000000000002 /* WindowTracker.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -96,6 +97,7 @@
 		8A87F6F92ABC8A0F004305F6 /* RecordingToolBarView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RecordingToolBarView.swift; sourceTree = "<group>"; };
 		8AD7AB9B2A8B898A009D5962 /* NSPoint.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NSPoint.swift; sourceTree = "<group>"; };
 		8AFD4D362BA071B1001F98F5 /* PerspectiveView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PerspectiveView.swift; sourceTree = "<group>"; };
+		8AC11E002E9B000000000002 /* WindowTracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowTracker.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -194,6 +196,7 @@
 				8AD7AB9B2A8B898A009D5962 /* NSPoint.swift */,
 				8A87F6F72ABC8711004305F6 /* ScreenRecorder.swift */,
 				8A140AAE2B57EDE10003B08A /* CGSize.swift */,
+				8AC11E002E9B000000000002 /* WindowTracker.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -346,6 +349,7 @@
 				8A140ABC2B57FA580003B08A /* UIElement.swift in Sources */,
 				8A6B30E72A61D765005995A6 /* CollectApp.swift in Sources */,
 				8AFD4D372BA071B1001F98F5 /* PerspectiveView.swift in Sources */,
+				8AC11E002E9B000000000001 /* WindowTracker.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
